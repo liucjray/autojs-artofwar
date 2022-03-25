@@ -2,18 +2,19 @@
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
 
-const allHours = [9,11,13];
+const allHours = [19, 20, 21];
 
 const taskHours = allHours; // 賞金任務
 const taskWaitSeconds = 15;
 
-const arenaHours = [18,19]; // 競技場
+const arenaHours = [18, 19]; // 競技場
 const arenaWaitSeconds = 60;
 
 const hountingHours = [18, 19]; // 榮耀狩獵
 const hountingWaitSeconds = 300;
 
 const fightWaitSeconds = 30;
+const fight8000WaitSeconds = 30;
 
 
 function sleepAndLog(times) {
@@ -36,20 +37,21 @@ while (true) {
         collectResource();
     }
 
-    if (shouldTask()) {
-        task();
-    }
+    // if (shouldTask()) {
+    //     task();
+    // }
 
-    if (shouldArena()) {
-        arena();
-    }
+    // if (shouldArena()) {
+    //     arena();
+    // }
 
-    if (shouldHounting()) {
-        hounting();
-    }
+    // if (shouldHounting()) {
+    //     hounting();
+    // }
 
     if (shouldFight()) {
-        fight();
+        // fight();
+        fight8000();
     }
 
     devLog('### END ###');
@@ -101,6 +103,38 @@ function fight() {
 
     // console.log('點下一步'); //toast('點戰鬥完成下一步按鈕');
     click(700, 1250);
+    sleepAndLog(3);
+}
+
+function fight8000() {
+
+    // 智障禮包廣告
+    sleepAndLog(2);
+    click(964, 294);
+    sleepAndLog(2);
+
+
+    click(545, 1845);
+    sleepAndLog(2);
+    click(545, 1845);
+    sleepAndLog(3); // matching load
+
+
+    click(545, 1550);
+    sleepAndLog(3);
+
+    // 點 8000 關 按鈕
+    click(545, 1550);
+
+    // // 等待 x 秒戰鬥完成
+    log('--- 戰鬥開始等待 ' + fight8000WaitSeconds + ' 秒  ---');
+    sleepAndLog(fight8000WaitSeconds);
+
+    // 失敗 (下一步)
+    click(360 * 2, 630 * 2);
+    click(360 * 2, 730 * 2);
+
+    // click(700, 1250);
     sleepAndLog(3);
 }
 
