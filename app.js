@@ -2,17 +2,19 @@
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
 
-const allHours = [19, 20, 21];
-
-const taskHours = allHours; // 賞金任務
+// 賞金任務
+const taskHours = [20, 21];
 const taskWaitSeconds = 15;
-
-const arenaHours = [18, 19]; // 競技場
+// 賞金任務-無限戰爭
+const unlimitWarHours = [9];
+const unlimitWarWaitSeconds = 305;
+// 榮耀狩獵
+const hountingHours = [10];
+const hountingWaitSeconds = 305;
+ // 競技場
+const arenaHours = [18, 19];
 const arenaWaitSeconds = 60;
-
-const hountingHours = [18, 19]; // 榮耀狩獵
-const hountingWaitSeconds = 300;
-
+// 開戰
 const fightWaitSeconds = 30;
 const fight8000WaitSeconds = 30;
 
@@ -37,17 +39,21 @@ while (true) {
         collectResource();
     }
 
-    // if (shouldTask()) {
-    //     task();
-    // }
+    if (shouldTask()) {
+        task();
+    }
 
-    // if (shouldArena()) {
-    //     arena();
-    // }
+    if (shouldUnlimitWar()) {
+        unlimitWar();
+    } 
 
-    // if (shouldHounting()) {
-    //     hounting();
-    // }
+    if (shouldArena()) {
+        arena();
+    }
+
+    if (shouldHounting()) {
+        hounting();
+    }
 
     if (shouldFight()) {
         // fight();
@@ -121,7 +127,7 @@ function fight8000() {
 
 
     click(545, 1550);
-    sleepAndLog(3);
+    sleepAndLog(5);
 
     // 點 8000 關 按鈕
     click(545, 1550);
@@ -270,6 +276,62 @@ function arena() {
     // click(80, 80);
     // sleepAndLog(3);
 }
+
+function shouldUnlimitWar() {
+
+    let nowDate = new Date();
+
+    devLog('nowDate.getHours() = ' + nowDate.getHours());
+
+    // 任務時段
+    if (unlimitWarHours.indexOf(nowDate.getHours()) !== -1) {
+        devLog('--- 執行無限戰爭 ---');
+        return true;
+    }
+
+    devLog('--- 無須執行無限戰爭 ---');
+    return false;
+}
+
+function unlimitWar() {
+
+    _clickLeftTop();
+
+    // console.log('點領地');
+    click(770, 1845);
+    sleepAndLog(1);
+    click(770, 1845);
+    sleepAndLog(1);
+
+    // console.log('點賞金任務');
+    click(878, 1045);
+    sleepAndLog(3);
+
+    // console.log('點 挑戰');
+    click(440 * 2, 350 * 2);
+    sleepAndLog(5);
+
+    // console.log('進入 玩家排名榜 點 挑戰');
+    click(274 * 2, 920 * 2);
+    sleepAndLog(5);
+
+    // console.log('點開戰');
+    click(270 * 2, 800 * 2);
+    sleepAndLog(unlimitWarWaitSeconds);
+
+    // console.log('點下一步');
+    click(270 * 2, 750 * 2);
+    sleepAndLog(3);
+
+    // console.log('點上頁箭頭');
+    click(78, 78);
+    sleepAndLog(2);
+
+    // console.log('點上頁箭頭');
+    click(78, 78);
+    sleepAndLog(2);
+}
+
 
 function shouldTask() {
 
