@@ -3,16 +3,16 @@ const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
 
 // 賞金任務
-const taskHours = [20, 21];
+const taskHours = [11, 15, 20, 21];
 const taskWaitSeconds = 15;
 // 賞金任務-無限戰爭
-const unlimitWarHours = [9];
+const unlimitWarHours = [9, 21, 23, 0];
 const unlimitWarWaitSeconds = 305;
 // 榮耀狩獵
 const hountingHours = [10];
 const hountingWaitSeconds = 305;
- // 競技場
-const arenaHours = [18, 19];
+// 競技場
+const arenaHours = [18, 20];
 const arenaWaitSeconds = 60;
 // 開戰
 const fightWaitSeconds = 30;
@@ -45,7 +45,7 @@ while (true) {
 
     if (shouldUnlimitWar()) {
         unlimitWar();
-    } 
+    }
 
     if (shouldArena()) {
         arena();
@@ -322,6 +322,33 @@ function unlimitWar() {
     // console.log('點下一步');
     click(270 * 2, 750 * 2);
     sleepAndLog(3);
+
+    // 蒐集鑽石
+    // 1M
+    click(100 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(100 * 2, 170 * 2);
+    // 5M
+    click(185 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(185 * 2, 170 * 2);
+    // 10M
+    click(265 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(265 * 2, 170 * 2);
+    // 30M
+    click(350 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(350 * 2, 170 * 2);    
+    // 40M
+    click(435 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(435 * 2, 170 * 2);
+    // 50M
+    click(520 * 2, 170 * 2);
+    sleepAndLog(1);
+    click(520 * 2, 170 * 2);
+
 
     // console.log('點上頁箭頭');
     click(78, 78);
