@@ -3,10 +3,10 @@ const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
 
 // 賞金任務
-const taskHours = [11, 15, 20, 21];
+const taskHours = [11, 16, 22];
 const taskWaitSeconds = 15;
 // 賞金任務-無限戰爭
-const unlimitWarHours = [9, 21, 23, 0];
+const unlimitWarHours = [9, 21];
 const unlimitWarWaitSeconds = 305;
 // 榮耀狩獵
 const hountingHours = [10];
@@ -18,13 +18,6 @@ const arenaWaitSeconds = 60;
 const fightWaitSeconds = 30;
 const fight8000WaitSeconds = 30;
 
-
-function sleepAndLog(times) {
-    for (let i = times; i > 0; --i) {
-        sleep(1000);
-        log(i);
-    }
-}
 
 while (true) {
     devLog('### START ###');
@@ -61,11 +54,6 @@ while (true) {
     }
 
     devLog('### END ###');
-}
-
-function init() {
-    // 避免有時候如果點了左上角，但是戰鬥尚未結束時卡住的問題
-    _clickGoBack();
 }
 
 function isArtOfWarAct() {
@@ -179,29 +167,6 @@ function shouldHounting() {
 
     devLog('--- 無須執行榮耀狩獵 ---');
     return false;
-}
-
-function _clickLeftTop() {
-    // console.log('點左上角'); //toast('點主頁');
-    click(70, 70);
-    click(70, 70);
-    sleepAndLog(2);
-}
-
-function _clickMainPage() {
-    // console.log('點主頁'); //toast('點主頁');
-    click(545, 1845);
-    sleepAndLog(2);
-    click(545, 1845);
-    sleepAndLog(2);
-}
-
-function _clickGoBack() {
-    click(275 * 2, 525 * 2);
-    sleepAndLog(2);
-
-    click(340 * 2, 600 * 2);
-    sleepAndLog(2);
 }
 
 function hounting() {
@@ -325,29 +290,23 @@ function unlimitWar() {
 
     // 蒐集鑽石
     // 1M
-    click(100 * 2, 170 * 2);
+    multipleClick(100 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(100 * 2, 170 * 2);
     // 5M
-    click(185 * 2, 170 * 2);
+    multipleClick(185 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(185 * 2, 170 * 2);
     // 10M
-    click(265 * 2, 170 * 2);
+    multipleClick(265 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(265 * 2, 170 * 2);
     // 30M
-    click(350 * 2, 170 * 2);
+    multipleClick(350 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(350 * 2, 170 * 2);    
     // 40M
-    click(435 * 2, 170 * 2);
+    multipleClick(435 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(435 * 2, 170 * 2);
     // 50M
-    click(520 * 2, 170 * 2);
+    multipleClick(520 * 2, 170 * 2, 5, 0);
     sleepAndLog(1);
-    click(520 * 2, 170 * 2);
 
 
     // console.log('點上頁箭頭');
@@ -411,6 +370,55 @@ function task() {
     // console.log('點上頁箭頭');
     click(78, 78);
     sleepAndLog(2);
+}
+
+
+// ----------
+// 共用方法
+// ----------
+
+function init() {
+    // 避免有時候如果點了左上角，但是戰鬥尚未結束時卡住的問題
+    _clickGoBack();
+}
+
+function _clickLeftTop() {
+    // console.log('點左上角'); //toast('點主頁');
+    click(70, 70);
+    click(70, 70);
+    sleepAndLog(2);
+}
+
+function _clickMainPage() {
+    // console.log('點主頁'); //toast('點主頁');
+    click(545, 1845);
+    sleepAndLog(2);
+    click(545, 1845);
+    sleepAndLog(2);
+}
+
+function _clickGoBack() {
+    click(275 * 2, 525 * 2);
+    sleepAndLog(2);
+
+    click(340 * 2, 600 * 2);
+    sleepAndLog(2);
+}
+
+function multipleClick(x, y, times, delaySeconds) {
+    for (let i = 1; i <= times; i++) {
+        click(x, y);
+        if (delaySeconds > 0) {
+            sleepAndLog(delaySeconds);
+        }
+    }
+}
+
+function sleepAndLog(times) {
+    for (let i = times; i > 0; --i) {
+        sleep(1000);
+        log(i);
+    }
 }
 
 function devLog(str) {
