@@ -6,7 +6,7 @@ const logger = true;
 const taskHours = [11, 16, 22];
 const taskWaitSeconds = 15;
 // 賞金任務-無限戰爭
-const unlimitWarHours = [9, 21];
+const unlimitWarHours = [9, 20];
 const unlimitWarWaitSeconds = 305;
 // 榮耀狩獵
 const hountingHours = [10];
@@ -32,8 +32,8 @@ while (true) {
         collectResource();
     }
 
-    if (shouldTask()) {
-        task();
+    if (shouldCollectBox8000()) {
+        collectBox8000();
     }
 
     if (shouldUnlimitWar()) {
@@ -153,6 +153,34 @@ function collectResource() {
 
     click(545, 1242);
     sleepAndLog(5);
+}
+
+
+function shouldCollectBox8000() {
+    let rnd = random(1, 30);
+    if (rnd == 1) {
+        devLog('--- 執行蒐集寶箱列表 ---');
+        return true;
+    }
+    devLog('--- 無須執行蒐集寶箱列表 ---');
+    return false;
+}
+
+function collectBox8000() {
+    _clickMainPage();
+
+    // 點寶箱圖示
+    click(480 * 2, 100 * 2);
+    // 20
+    multipleClick(170 * 2, 225 * 2, 3, 0);
+    // 40
+    multipleClick(245 * 2, 225 * 2, 3, 0);
+    // 60
+    multipleClick(320 * 2, 225 * 2, 3, 0);
+    // 100
+    multipleClick(480 * 2, 225 * 2, 3, 0);
+    // 點 X
+    click(500 * 2, 115 * 2);
 }
 
 function shouldHounting() {
