@@ -3,7 +3,8 @@ const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
 
 // 賞金任務
-const taskHours = [11, 16, 22];
+const isTaskRandom = false;
+const taskHours = [11, 12];
 const taskWaitSeconds = 15;
 // 賞金任務-無限戰爭
 const unlimitWarHours = [9, 20];
@@ -14,6 +15,9 @@ const hountingWaitSeconds = 305;
 // 競技場
 const arenaHours = [18, 20];
 const arenaWaitSeconds = 60;
+// 英雄試煉
+const heroHours = [8]; //[18, 20];
+const heroWaitSeconds = 30;
 // 開戰
 const fightWaitSeconds = 30;
 const fight8000WaitSeconds = 30;
@@ -46,6 +50,10 @@ while (true) {
 
     if (shouldHounting()) {
         hounting();
+    }
+
+    if (shouldHero()) {
+        hero();
     }
 
     if (shouldFight()) {
@@ -270,6 +278,61 @@ function arena() {
     // sleepAndLog(3);
 }
 
+function shouldHero() {
+
+    let nowDate = new Date();
+
+    // 執行競技場時段
+    if (heroHours.indexOf(nowDate.getHours()) !== -1) {
+        devLog('--- 執行英雄試煉 ---');
+        return true;
+    }
+
+    devLog('--- 無須執行英雄試煉 ---');
+    return false;
+}
+
+function hero() {
+    // console.log('點 領地'); 點兩次避免執行完有彈窗卡住
+    multipleClick(400 * 2, 940 * 2, 2);
+    sleepAndLog(2);
+
+    // 點英雄試煉
+    multipleClick(220 * 2, 640 * 2, 2);
+    sleepAndLog(2);
+
+    // console.log('點挑戰');
+    click(540 * 2, 1660 * 2);
+    sleepAndLog(2);
+
+    // console.log('點前往');
+    click(440 * 2, 330 * 2);
+    sleepAndLog(5);
+
+    // console.log('點 挑戰');
+    click(275 * 2, 910 * 2);
+    sleepAndLog(4);
+
+    // console.log('超過挑戰次數的確認');
+    click(285 * 2, 600 * 2);
+    sleepAndLog(2);
+
+    // console.log('點一位去挑戰');
+    click(425 * 2, 520 * 2);
+    sleepAndLog(5);
+
+    // console.log('點開戰');
+    click(270 * 2, 800 * 2);
+    sleepAndLog(heroWaitSeconds);
+
+    // console.log('點下一步');
+    click(275 * 2, 720 * 2);
+    sleepAndLog(5);
+
+    _clickLeftTop();
+    _clickLeftTop();
+}
+
 function shouldUnlimitWar() {
 
     let nowDate = new Date();
@@ -377,7 +440,17 @@ function task() {
     click(878, 1045);
     sleepAndLog(3);
 
-    let rnd = random(1, 2);
+    let rnd = 0;
+    if (isTaskRandom) {
+        log('--- 使用 random 執行賞金任務 ---');
+        rnd = random(1, 2);
+    } else {
+        let nowDate = new Date();
+        log('--- 使用 %2 執行賞金任務 ---', nowDate.getHours(), nowDate.getHours() % 2);
+        rnd = nowDate.getHours() % 2;
+    }
+    log('rnd: ' + rnd);
+
     if (rnd == 1) {
         // console.log('點沙漠尋寶');
         click(850, 1200);
