@@ -14,7 +14,7 @@ const unlimitWarWaitSeconds = 305;
 const hountingHours = [10];
 const hountingWaitSeconds = 305;
 // 競技場
-const arenaHours = [18, 20];
+const arenaHours = [0];
 const arenaWaitSeconds = 60;
 // 英雄試煉
 const heroHours = [8]; //[18, 20];
@@ -27,6 +27,12 @@ const fight8000WaitSeconds = 25;
 if (!requestScreenCapture(false)) {
     toast("请求截图失败");
     exit();
+}
+
+// 截圖
+rootGetScreen = function () {
+    captureScreen(src + 'sc.png');
+    return images.read(src + 'sc.png')
 }
 
 FindAndClick = function (png) {
@@ -50,10 +56,45 @@ FindAndClick = function (png) {
     return re;
 }
 
-// 截圖
-rootGetScreen = function () {
-    captureScreen(src + 'sc.png');
-    return images.read(src + 'sc.png')
+// FindAndClick('123');
+ScanPicsAndClick = function (pics) {
+    var img = rootGetScreen();
+    log(pics);
+
+    var re = false;
+    pics.forEach(pic => {
+
+        var wx = images.read(src + pic);
+        var p = findImage(img, wx);
+
+        if (p) {
+            toast(pic);
+            log([p.x, p.y])
+            click(p.x, p.y);
+            re = true;
+        }
+        else {
+            log("Not found: " + pic);
+        }
+
+        wx.recycle();
+
+    });
+
+
+    img.recycle();
+
+    return re;
+}
+
+goBackUntilIndex = function () {
+    var items = ['關閉.png', '返回.png'];
+    while (true) {
+        ScanPicsAndClick(items);
+        if (FindAndClick('主頁.png') || FindAndClick('競技場.png')) {
+            break;
+        }
+    }
 }
 
 beforeWait = function () {
