@@ -14,7 +14,7 @@ const unlimitWarWaitSeconds = 305;
 const hountingHours = [10];
 const hountingWaitSeconds = 305;
 // 競技場
-const arenaHours = [0];
+const arenaHours = [0, 1];
 const arenaWaitSeconds = 60;
 // 英雄試煉
 const heroHours = [8]; //[18, 20];
@@ -87,13 +87,20 @@ ScanPicsAndClick = function (pics) {
     return re;
 }
 
+// 返回主頁
 goBackUntilIndex = function () {
     var items = ['關閉.png', '返回.png'];
     while (true) {
         ScanPicsAndClick(items);
-        if (FindAndClick('主頁.png') || FindAndClick('競技場.png')) {
+        beforeWait();
+        // 試兩次
+        if (FindAndClick('主頁.png') || FindAndClick('主頁.png')) {
             break;
         }
+        if (FindAndClick('主頁2.png') || FindAndClick('主頁2.png')) {
+            break;
+        }
+        afterWait();
     }
 }
 
@@ -397,8 +404,11 @@ function arena() {
 function arenaV2() {
     // break label 
     // ref: https://stackoverflow.com/questions/1564818/how-to-break-nested-loops-in-javascript
+
+    var arenaContinue = true;
+
     競技場:
-    while (true) {
+    while (arenaContinue) {
 
         while (true) {
             beforeWait();
@@ -427,6 +437,8 @@ function arenaV2() {
         while (true) {
             beforeWait();
             if (FindAndClick('競技場_挑戰_挑戰_額外挑戰次數.png')) {
+                goBackUntilIndex();
+                arenaContinue = false;
                 // break label
                 break 競技場;
             }
