@@ -1,10 +1,11 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const logger = true;
+const src = '/sdcard/Pictures/';
 
 // 賞金任務
 const isTaskRandom = false;
-const taskHours = [11, 12];
+const taskHours = [13, 14];
 const taskWaitSeconds = 15;
 // 賞金任務-無限戰爭
 const unlimitWarHours = [9, 20];
@@ -20,8 +21,40 @@ const heroHours = [8]; //[18, 20];
 const heroWaitSeconds = 30;
 // 開戰
 const fightWaitSeconds = 30;
-const fight8000WaitSeconds = 30;
+const fight8000WaitSeconds = 25;
 
+
+if (!requestScreenCapture(false)) {
+    toast("请求截图失败");
+    exit();
+}
+
+FindAndClick = function (png) {
+    var img = rootGetScreen();
+    log(png);
+    var wx = images.read(src + png);
+    var p = findImage(img, wx);
+    var re = false;
+    if (p) {
+        toast(png);
+        // log("find : " + png);
+        log([p.x, p.y])
+        click(p.x, p.y);
+        re = true;
+    }
+    else {
+        log("Not found: " + png)
+    }
+    img.recycle();
+    wx.recycle();
+    return re;
+}
+
+// 截圖
+rootGetScreen = function () {
+    captureScreen(src + 'sc.png');
+    return images.read(src + 'sc.png')
+}
 
 while (true) {
     devLog('### START ###');
@@ -45,7 +78,12 @@ while (true) {
     }
 
     if (shouldArena()) {
-        arena();
+        // arena();
+        arenaV2();
+    }
+
+    if (shouldTask()) {
+        task();
     }
 
     if (shouldHounting()) {
@@ -58,7 +96,8 @@ while (true) {
 
     if (shouldFight()) {
         // fight();
-        fight8000();
+        // fight8000();
+        fight8000V2();
     }
 
     devLog('### END ###');
@@ -138,6 +177,29 @@ function fight8000() {
 
     // click(700, 1250);
     sleepAndLog(3);
+}
+
+function fight8000V2() {
+    while (true) {
+        sleep(500);
+        if (FindAndClick('主頁_開戰.png')) {
+            break;
+        }
+    }
+
+    while (true) {
+        sleep(500);
+        if (FindAndClick('主頁_開戰_關卡8000.png')) {
+            break;
+        }
+    }
+
+    while (true) {
+        sleep(1000);
+        if (FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
+            break;
+        }
+    }
 }
 
 function shouldCollectResourece() {
@@ -276,6 +338,66 @@ function arena() {
     // console.log('先點左上角避免一直卡住')
     // click(80, 80);
     // sleepAndLog(3);
+}
+
+function arenaV2() {
+    // break label 
+    // ref: https://stackoverflow.com/questions/1564818/how-to-break-nested-loops-in-javascript
+    競技場:
+    while (true) {
+
+        while (true) {
+            if (FindAndClick('競技場.png')) {
+                break;
+            }
+            sleep(1000);
+        }
+
+        while (true) {
+            if (FindAndClick('競技場_挑戰.png')) {
+                break;
+            }
+            sleep(1000);
+        }
+
+        while (true) {
+            if (FindAndClick('競技場_挑戰_挑戰.png')) {
+                break;
+            }
+            sleep(1000);
+        }
+
+        while (true) {
+            if (FindAndClick('競技場_挑戰_挑戰_額外挑戰次數.png')) {
+                // break label
+                break 競技場;
+            }
+            sleep(1000);
+        }
+
+        while (true) {
+            if (FindAndClick('競技場_挑戰_挑戰_開戰.png')) {
+                break;
+            }
+            sleep(1000);
+        }
+
+        while (true) {
+            if (FindAndClick('競技場_挑戰_挑戰_開戰_下一步.png')) {
+                break;
+            }
+            sleep(1000);
+        }
+
+        // 有主頁就先回主頁
+        for (let $i = 1; $i <= 3; $i++) {
+            if (FindAndClick('主頁.png')) {
+                break;
+            }
+            sleep(500);
+        }
+
+    }
 }
 
 function shouldHero() {
