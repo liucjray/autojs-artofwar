@@ -181,24 +181,24 @@ function fight8000() {
 
 function fight8000V2() {
     while (true) {
-        sleep(500);
         if (FindAndClick('主頁_開戰.png')) {
             break;
         }
+        sleep(500);
     }
 
     while (true) {
-        sleep(500);
         if (FindAndClick('主頁_開戰_關卡8000.png')) {
             break;
         }
+        sleep(500);
     }
 
     while (true) {
-        sleep(1000);
         if (FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
             break;
         }
+        sleep(500);
     }
 }
 
