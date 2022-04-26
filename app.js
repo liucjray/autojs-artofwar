@@ -56,7 +56,17 @@ rootGetScreen = function () {
     return images.read(src + 'sc.png')
 }
 
+beforeWait = function () {
+    sleep(600);
+}
+afterWait = function () {
+    sleep(600);
+}
+
 while (true) {
+    // break label
+    初始位置:
+
     devLog('### START ###');
 
     init();
@@ -181,24 +191,27 @@ function fight8000() {
 
 function fight8000V2() {
     while (true) {
+        beforeWait();
         if (FindAndClick('主頁_開戰.png')) {
             break;
         }
-        sleep(500);
+        afterWait();
     }
 
     while (true) {
+        beforeWait();
         if (FindAndClick('主頁_開戰_關卡8000.png')) {
             break;
         }
-        sleep(500);
+        afterWait();
     }
 
     while (true) {
+        beforeWait();
         if (FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
             break;
         }
-        sleep(500);
+        afterWait();
     }
 }
 
@@ -347,54 +360,61 @@ function arenaV2() {
     while (true) {
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場.png')) {
                 break;
             }
-            sleep(1000);
+            afterWait();
         }
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場_挑戰.png')) {
                 break;
             }
-            sleep(1000);
+            afterWait();
         }
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場_挑戰_挑戰.png')) {
                 break;
             }
-            sleep(1000);
+            afterWait();
         }
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場_挑戰_挑戰_額外挑戰次數.png')) {
                 // break label
                 break 競技場;
             }
-            sleep(1000);
+            afterWait();
         }
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場_挑戰_挑戰_開戰.png')) {
                 break;
             }
-            sleep(1000);
+            afterWait();
         }
 
         while (true) {
+            beforeWait();
             if (FindAndClick('競技場_挑戰_挑戰_開戰_下一步.png')) {
                 break;
             }
-            sleep(1000);
+            afterWait();
         }
 
         // 有主頁就先回主頁
         for (let $i = 1; $i <= 3; $i++) {
+            afterWait();
             if (FindAndClick('主頁.png')) {
                 break;
             }
-            sleep(500);
+            beforeWait();
         }
 
     }
