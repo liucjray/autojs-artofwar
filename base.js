@@ -160,7 +160,9 @@ base.waitImgs = function (names, max) {
                 if (p) {
                     // toast(name.replace('.png', ''));
                     // log("click : " + name);
+                    this.logClose();
                     click(p.x, p.y);
+                    this.logShow();
                     reName = name;
                     index = max;
                 }
