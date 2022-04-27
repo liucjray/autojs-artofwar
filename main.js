@@ -2,6 +2,7 @@
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
 const src = './pictures/'; // 打包用
+// const src = '/sdcard/Pictures/'; // 打包用
 // const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
@@ -126,8 +127,6 @@ function 自動戰鬥8000關後() {
         try {
             devLog('### START ###');
 
-            // init();
-
             if (isArtOfWarAct() === false) { // 檢查是否啟動
                 launchGame();
             }
@@ -167,6 +166,9 @@ function 自動戰鬥8000關後() {
                 // fight8000();
                 fight8000V2();
             }
+
+            toast("三秒後重新啟動");
+            sleepAndLog(3);
 
             devLog('### END ###');
         }
@@ -349,28 +351,22 @@ function fight8000() {
 }
 
 function fight8000V2() {
-    while (true) {
-        beforeWait();
-        if (base.FindAndClick('主頁_開戰.png')) {
-            break;
-        }
-        afterWait();
+
+    _clickMainPage();
+
+    if (!base.waitImg('主頁_開戰.png', 6, false)) {
+        throw "找不到主頁_開戰、重新執行流程";
     }
 
-    while (true) {
-        beforeWait();
-        if (base.FindAndClick('主頁_開戰_關卡8000.png')) {
-            break;
-        }
-        afterWait();
+    if (!base.waitImg('主頁_開戰_關卡8000.png', 6, false)) {
+        throw "找不到主頁_開戰_關卡8000、重新執行流程";
     }
 
-    while (true) {
-        beforeWait();
-        if (base.FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
-            break;
-        }
-        afterWait();
+    // 進入戰鬥延時等待秒數
+    sleepAndLog(10);
+
+    if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 6, false)) {
+        throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
     }
 }
 

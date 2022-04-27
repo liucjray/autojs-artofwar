@@ -256,7 +256,8 @@ function fight8000V2() {
 
     while (true) {
         beforeWait();
-        if (FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
+        if (FindAndClick('主頁_開戰_關卡8000_下一步.png') ||
+            FindAndClick('主頁_開戰_關卡8000_下一步.png')) {
             break;
         }
         afterWait();
