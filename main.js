@@ -1,8 +1,8 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-const src = './pictures/'; // 打包用
-// const src = '/sdcard/Pictures/'; // 打包用
+// const src = './pictures/'; // 打包用
+const src = '/sdcard/Pictures/'; // 打包用
 // const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
@@ -369,8 +369,17 @@ function fight8000V2() {
     // 進入戰鬥延時等待秒數
     sleepAndLog(10);
 
-    if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 6, false)) {
-        throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
+    base.FindAndClick('主頁_開戰_關卡_Auto_off.png')
+    var re = base.waitImgs([
+        '主頁_開戰_關卡_勝利.png',
+        '主頁_開戰_關卡_失敗.png'], 20);
+    if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
+        if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 3)) {
+            throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
+        }
+    }
+    else {
+        throw "無戰後結果、重新執行流程";
     }
 }
 
