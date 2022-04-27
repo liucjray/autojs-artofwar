@@ -1,7 +1,8 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-const src = './pictures/';
+// const src = './pictures/'; // 打包用
+const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
