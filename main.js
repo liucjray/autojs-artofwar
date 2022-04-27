@@ -1,8 +1,8 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-const src = './pictures/'; // 打包用
-// const src = './autojs-artofwar/Pictures/';
+// const src = './pictures/'; // 打包用
+const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
@@ -40,6 +40,7 @@ var afeatures = dialogs.multiChoice(
         '賞金任務', // 3
         '榮耀狩獵', // 4
         '英雄試煉', // 5
+        '觀看三倍獎勵廣告', // 6
     ],
     sFeatures.split(',')
 );
@@ -215,9 +216,9 @@ function isArtOfWarAct() {
 // 啟動遊戲
 function launchGame() {
     devLog(currentActivity());
-    home();
-    launchApp('Art of War');
+    // home();
     devLog('--- 檢查並非在遊戲中, 重新進入遊戲 ---');
+    launchApp('Art of War');
     // sleepAndLog(30);
     base.waitImgs(['主頁.png', '主頁2.png'], 6);
 }
@@ -271,7 +272,10 @@ function fight() {
         '主頁_開戰_關卡_勝利.png',
         '主頁_開戰_關卡_失敗.png'], 20);
     if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-        if (!base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 3)) {
+
+        if (!base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 3)
+            || afeatures.indexOf(6) < 0 // 勾選不看廣告
+        ) {
             if (!base.waitImg('主頁_開戰_關卡_勝利_下一步.png', 3)) {
                 throw "找不到主頁_開戰_關卡_勝利_下一步、重新執行流程";
             }
@@ -282,7 +286,7 @@ function fight() {
                     '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                     '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
                     '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
-                ], 8);
+                ], 9);
             if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
                 || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
                 || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
