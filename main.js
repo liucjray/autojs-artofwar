@@ -1,8 +1,8 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-// const src = './pictures/'; // 打包用
-const src = './autojs-artofwar/Pictures/';
+const src = './pictures/'; // 打包用
+// const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
@@ -880,37 +880,19 @@ function afterWait() {
 
 // 卡住處理
 function stuckHandling() {
-    if (base.FindAndClick('取消.png')) {
-        sleepAndLog(5);
+    var re = base.waitImgs([
+        '取消.png',
+        '關閉.png',
+        '關閉2.png',
+        '領取.png',
+        '重試.png',
+        '好.png',
+        '提交.png',
+        '主頁_開戰_關卡_下一步.png',
+        '主頁_開戰_關卡_勝利_三倍獎勵_關閉.png',
+    ], 1);
+    if (re != false) {
         return true;
     }
-    if (base.FindAndClick('關閉.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('關閉2.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('領取.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('主頁_開戰_關卡_下一步.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('主頁_開戰_關卡_勝利_三倍獎勵_關閉.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('重試.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    if (base.FindAndClick('好.png')) {
-        sleepAndLog(5);
-        return true;
-    }
-    return false
+    return false;
 }
