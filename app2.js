@@ -26,7 +26,22 @@ const fight8000WaitSeconds = 25;
 
 var base = require("./base.js");
 base.start(src);
-// base.floaty_set();
+base.floaty_set();
+
+var storage = storages.create("RITK");
+var sFeatures = (storage.get("features")) ? storage.get("features") : '0';
+var afeatures = dialogs.multiChoice(
+    '請選擇使用的功能',
+    [
+        '執行關卡', // 0
+        '無限戰爭', // 1
+        '競技場', // 2
+        '賞金任務', // 3
+        '榮耀狩獵', // 4
+        '英雄試煉', // 5
+    ],
+    sFeatures.split(',')
+);
 
 // 用戶選擇模式
 type_id = dialogs.singleChoice(
@@ -47,6 +62,12 @@ switch (type_id) {
         break;
 }
 
+
+sFeatures = afeatures.join(',');
+sFeatures = (sFeatures == "") ? '0' : sFeatures;
+storage.put("features", sFeatures)
+
+
 function 自動戰鬥8000關前() {
     devLog('### START ###');
     while (true) {
@@ -61,9 +82,9 @@ function 自動戰鬥8000關前() {
                 collectResource();
             }
 
-            // if (shouldUnlimitWar()) { // 無限戰爭
-            //     unlimitWar();
-            // }
+            if (shouldUnlimitWar()) { // 無限戰爭
+                unlimitWar();
+            }
 
             if (shouldArena()) { // 競技場
                 arenaV2();
@@ -88,11 +109,13 @@ function 自動戰鬥8000關前() {
             if (shouldUnlock()) { // 是否有新解鎖
                 unlock();
             }
-            toast("五秒後重新啟動");
-            sleepAndLog(5);
+            toast("三秒後重新啟動");
+            sleepAndLog(3);
         }
         catch (e) {
             devLog(e);
+            // 卡住處理
+            stuckHandling();
         }
     }
     devLog('### END ###');
@@ -162,6 +185,7 @@ function goBackUntilIndex() {
     var items = ['關閉.png', '返回.png'];
     if (!base.FindAndClick('主頁.png') && !base.FindAndClick('主頁2.png')) {
         while (true) {
+            launchApp('Art of War');
             base.ScanPicsAndClick(items);
             beforeWait();
             // 試兩次
@@ -192,7 +216,7 @@ function launchGame() {
     launchApp('Art of War');
     devLog('--- 檢查並非在遊戲中, 重新進入遊戲 ---');
     // sleepAndLog(30);
-    base.waitImgs(['主頁.png', '主頁2.png'], 30);
+    base.waitImgs(['主頁.png', '主頁2.png'], 6);
 }
 
 // 是否有新解鎖 ---
@@ -212,12 +236,15 @@ function unlock() {
 
 // 執行關卡 ---
 function shouldFight() {
+    if (afeatures.indexOf(0) < 0) {
+        return false;
+    }
     devLog('--- 執行關卡 ---');
     return true;
 }
 
 function fight() {
-    toast("執行關卡");
+    // toast("執行關卡");
     _clickMainPage();
     if (!base.waitImg('主頁_開戰.png', 6, false)) {
         throw "找不到主頁_開戰、重新執行流程";
@@ -239,7 +266,7 @@ function fight() {
     base.FindAndClick('主頁_開戰_關卡_Auto_off.png')
     var re = base.waitImgs([
         '主頁_開戰_關卡_勝利.png',
-        '主頁_開戰_關卡_失敗.png'], 90);
+        '主頁_開戰_關卡_失敗.png'], 20);
     if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
         if (!base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 3)) {
             if (!base.waitImg('主頁_開戰_關卡_勝利_下一步.png', 3)) {
@@ -251,7 +278,8 @@ function fight() {
                 ['主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png',
                     '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                     '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
-                ], 40);
+                    '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
+                ], 8);
             if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
                 || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
                 || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
@@ -264,7 +292,7 @@ function fight() {
             else {
                 back();
                 base.FindAndClick('主頁_開戰_關卡_勝利_三倍獎勵_關閉.png')
-                toast("三倍獎勵領取中");
+                // toast("三倍獎勵領取中");
                 sleepAndLog(5);
             }
         }
@@ -286,6 +314,7 @@ function fight() {
 function fight8000() {
 
     // 智障禮包廣告
+    base.logClose();
     sleepAndLog(2);
     click(964, 294);
     sleepAndLog(2);
@@ -312,6 +341,7 @@ function fight8000() {
     click(360 * 2, 730 * 2);
 
     // click(700, 1250);
+    base.logClose();
     sleepAndLog(3);
 }
 
@@ -353,16 +383,18 @@ function shouldCollectResourece() {
 }
 
 function collectResource() {
-    toast("執行蒐集資源");
+    // toast("執行蒐集資源");
 
     // _clickLeftTop();
 
     _clickMainPage();
 
+    base.logClose();
     click(378, 683);
     sleepAndLog(5);
 
     click(545, 1242);
+    base.logShow();
     sleepAndLog(5);
 }
 
@@ -381,6 +413,7 @@ function collectBox8000() {
     _clickMainPage();
 
     // 點寶箱圖示
+    base.logClose();
     click(480 * 2, 100 * 2);
     // 20
     multipleClick(170 * 2, 225 * 2, 3, 0);
@@ -392,10 +425,15 @@ function collectBox8000() {
     multipleClick(480 * 2, 225 * 2, 3, 0);
     // 點 X
     click(500 * 2, 115 * 2);
+    base.logShow();
 }
 
 // 榮耀狩獵 ---
 function shouldHounting() {
+
+    if (afeatures.indexOf(4) < 0) {
+        return false;
+    }
 
     let nowDate = new Date();
 
@@ -412,9 +450,10 @@ function shouldHounting() {
 function hounting() {
     _clickLeftTop();
     _clickMainPage();
-    toast("榮耀狩獵");
+    // toast("榮耀狩獵");
     if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
         if (!base.FindAndClick('榮耀狩獵_鎖.png')) {
+            base.logClose();
             // console.log('點榮耀狩獵');
             click(130 * 2, 460 * 2);
             sleepAndLog(3);
@@ -429,6 +468,7 @@ function hounting() {
 
             // console.log('點下一步');
             click(540, 1440);
+            base.logShow();
             sleepAndLog(5);
 
             _clickLeftTop();
@@ -441,6 +481,10 @@ function hounting() {
 
 // 競技場 ---
 function shouldArena() {
+
+    if (afeatures.indexOf(2) < 0) {
+        return false;
+    }
 
     let nowDate = new Date();
 
@@ -456,6 +500,7 @@ function shouldArena() {
 
 function arena() {
     // console.log('點競技場'); 點兩次避免執行完有彈窗卡住
+    base.logClose();
     click(980, 1850);
     sleepAndLog(2);
     click(980, 1850);
@@ -475,6 +520,7 @@ function arena() {
 
     // console.log('點下一步');
     click(550, 1400);
+    base.logShow();
     sleepAndLog(5);
 
     // console.log('先點左上角避免一直卡住')
@@ -483,7 +529,7 @@ function arena() {
 }
 
 function arenaV2() {
-    toast("競技場");
+    // toast("競技場");
     // break label 
     // ref: https://stackoverflow.com/questions/1564818/how-to-break-nested-loops-in-javascript
     if (base.FindAndClick('競技場1.png') || base.FindAndClick('競技場2.png')) {
@@ -517,6 +563,10 @@ function arenaV2() {
 // 英雄試煉 ---
 function shouldHero() {
 
+    if (afeatures.indexOf(5) < 0) {
+        return false;
+    }
+
     let nowDate = new Date();
 
     // 執行競技場時段
@@ -531,9 +581,11 @@ function shouldHero() {
 
 function hero() {
 
-    toast("英雄試煉");
+    // toast("英雄試煉");
     if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
         if (!base.FindAndClick('英雄試煉_鎖.png')) {
+
+            base.logClose();
             // 點英雄試煉
             multipleClick(220 * 2, 640 * 2, 2);
             sleepAndLog(2);
@@ -564,6 +616,8 @@ function hero() {
 
             // console.log('點下一步');
             click(275 * 2, 720 * 2);
+
+            base.logShow();
             sleepAndLog(5);
 
             _clickLeftTop();
@@ -577,6 +631,10 @@ function hero() {
 
 // 無限戰爭 ---
 function shouldUnlimitWar() {
+
+    if (afeatures.indexOf(1) < 0) {
+        return false;
+    }
 
     let nowDate = new Date();
 
@@ -596,6 +654,7 @@ function unlimitWar() {
 
     _clickLeftTop();
 
+    base.logClose();
     // console.log('點領地');
     click(770, 1845);
     sleepAndLog(1);
@@ -649,11 +708,17 @@ function unlimitWar() {
 
     // console.log('點上頁箭頭');
     click(78, 78);
+
+    base.logShow();
     sleepAndLog(2);
 }
 
 // 賞金任務 ---
 function shouldTask() {
+
+    if (afeatures.indexOf(3) < 0) {
+        return false;
+    }
 
     let nowDate = new Date();
 
@@ -670,11 +735,13 @@ function shouldTask() {
 }
 
 function task() {
-    toast("賞金任務");
+    // toast("賞金任務");
     _clickLeftTop();
 
     if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
         if (!base.FindAndClick('賞金任務_鎖.png')) {
+
+            base.logClose();
             // console.log('點賞金任務');
             click(878, 1045);
             sleepAndLog(3);
@@ -709,6 +776,8 @@ function task() {
 
             // console.log('點上頁箭頭');
             click(78, 78);
+
+            base.logShow();
             sleepAndLog(2);
         }
     }
@@ -728,9 +797,12 @@ function init() {
 }
 
 function _clickLeftTop() {
-    // console.log('點左上角'); //toast('點主頁');
+    // console.log('點左上角'); 
+    // toast('點主頁');
+    base.logClose();
     click(70, 70);
     click(70, 70);
+    base.logShow();
     sleepAndLog(2);
 }
 
@@ -759,10 +831,14 @@ function _clickMainPage() {
 }
 
 function _clickGoBack() {
+
+    base.logClose();
     click(275 * 2, 525 * 2);
     sleepAndLog(2);
 
     click(340 * 2, 600 * 2);
+
+    base.logShow();
     sleepAndLog(2);
 }
 
@@ -800,6 +876,14 @@ function afterWait() {
 // 卡住處理
 function stuckHandling() {
     if (base.FindAndClick('關閉.png')) {
+        sleepAndLog(5);
+        return true;
+    }
+    if (base.FindAndClick('關閉2.png')) {
+        sleepAndLog(5);
+        return true;
+    }
+    if (base.FindAndClick('領取.png')) {
         sleepAndLog(5);
         return true;
     }

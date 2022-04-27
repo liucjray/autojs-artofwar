@@ -88,8 +88,7 @@ base.rootGetScreen = function () {
     return images.read(this.src + 'sc.png')
 }
 // 用圖片找點
-base.FindAndClick = function (png, isToast) {
-    isToast = (typeof isToast !== 'undefined') ?  isToast : true;
+base.FindAndClick = function (png) {
     this.logClose();
     var img = this.rootGetScreen();
     var name = png.replace('.png', '')
@@ -98,9 +97,8 @@ base.FindAndClick = function (png, isToast) {
     var p = findImage(img, wx);
     var re = false;
     if (p) {
-        if(isToast)
-            toast(name);
-        log("click : " + png);
+        // toast(name);
+        // log("click : " + png);
         // log([p.x, p.y])
         click(p.x, p.y);
         re = true;
@@ -108,9 +106,9 @@ base.FindAndClick = function (png, isToast) {
     else {
         // log("No : " + name)
     }
-    this.logShow();
     img.recycle();
     wx.recycle();
+    this.logShow();
     return re;
 }
 base.ScanPicsAndClick = function (pics) {
@@ -121,7 +119,7 @@ base.ScanPicsAndClick = function (pics) {
         var wx = images.read(this.src + pic);
         var p = findImage(img, wx);
         if (p) {
-            toast(pic);
+            // toast(pic);
             log([p.x, p.y])
             click(p.x, p.y);
             re = true;
@@ -134,12 +132,12 @@ base.ScanPicsAndClick = function (pics) {
     img.recycle();
     return re;
 }
-base.waitImg = function (name, max, isToast) {
+base.waitImg = function (name, max) {
     var index = 0;
     while (index < max) {
         index = index + 1;
         beforeWait();
-        if (base.FindAndClick(name, isToast)) {
+        if (base.FindAndClick(name)) {
             break;
         }
         afterWait();
@@ -150,15 +148,17 @@ base.waitImgs = function (names, max) {
     var reName = "";
     for (var index = 0; index < max; index++) {
         log([index, max]);
+        this.logClose();
         var img = this.rootGetScreen();
+        this.logShow();
         sleep(800);
         names.forEach(name => {
             if(index < max){
                 var wx = images.read(this.src + name);
                 var p = findImage(img, wx);
                 if (p) {
-                    toast(name.replace('.png', ''));
-                    log("click : " + name);
+                    // toast(name.replace('.png', ''));
+                    // log("click : " + name);
                     click(p.x, p.y);
                     reName = name;
                     index = max;
