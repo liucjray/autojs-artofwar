@@ -69,9 +69,11 @@ storage.put("features", sFeatures)
 
 
 function 自動戰鬥8000關前() {
-    devLog('### START ###');
+
     while (true) {
         try {
+            devLog('### START ###');
+
             if (isArtOfWarAct() === false) { // 檢查是否啟動
                 launchGame();
             }
@@ -111,6 +113,7 @@ function 自動戰鬥8000關前() {
             }
             toast("三秒後重新啟動");
             sleepAndLog(3);
+            devLog('### END ###');
         }
         catch (e) {
             devLog(e);
@@ -118,14 +121,14 @@ function 自動戰鬥8000關前() {
             stuckHandling();
         }
     }
-    devLog('### END ###');
+
 }
 function 自動戰鬥8000關後() {
     while (true) {
         try {
             devLog('### START ###');
 
-            init();
+            // init();
 
             if (isArtOfWarAct() === false) { // 檢查是否啟動
                 launchGame();
@@ -170,7 +173,9 @@ function 自動戰鬥8000關後() {
             devLog('### END ###');
         }
         catch (e) {
-            log(e);
+            devLog(e);
+            // 卡住處理
+            stuckHandling();
         }
 
     }
@@ -653,64 +658,65 @@ function shouldUnlimitWar() {
 function unlimitWar() {
 
     _clickLeftTop();
+    if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
+        if (!base.FindAndClick('賞金任務_鎖.png')) {
+            base.logClose();
 
-    base.logClose();
-    // console.log('點領地');
-    click(770, 1845);
-    sleepAndLog(1);
-    click(770, 1845);
-    sleepAndLog(1);
+            // console.log('點賞金任務');
+            click(878, 1045);
+            sleepAndLog(3);
 
-    // console.log('點賞金任務');
-    click(878, 1045);
-    sleepAndLog(3);
+            // console.log('點 挑戰');
+            click(440 * 2, 350 * 2);
+            sleepAndLog(5);
 
-    // console.log('點 挑戰');
-    click(440 * 2, 350 * 2);
-    sleepAndLog(5);
+            // console.log('進入 玩家排名榜 點 挑戰');
+            click(274 * 2, 920 * 2);
+            sleepAndLog(5);
 
-    // console.log('進入 玩家排名榜 點 挑戰');
-    click(274 * 2, 920 * 2);
-    sleepAndLog(5);
+            // console.log('點開戰');
+            click(270 * 2, 800 * 2);
+            sleepAndLog(unlimitWarWaitSeconds);
 
-    // console.log('點開戰');
-    click(270 * 2, 800 * 2);
-    sleepAndLog(unlimitWarWaitSeconds);
+            // console.log('點下一步');
+            click(270 * 2, 750 * 2);
+            sleepAndLog(3);
 
-    // console.log('點下一步');
-    click(270 * 2, 750 * 2);
-    sleepAndLog(3);
-
-    // 蒐集鑽石
-    // 1M
-    multipleClick(100 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
-    // 5M
-    multipleClick(185 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
-    // 10M
-    multipleClick(265 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
-    // 30M
-    multipleClick(350 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
-    // 40M
-    multipleClick(435 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
-    // 50M
-    multipleClick(520 * 2, 170 * 2, 5, 0);
-    sleepAndLog(1);
+            // 蒐集鑽石
+            // 1M
+            multipleClick(100 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
+            // 5M
+            multipleClick(185 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
+            // 10M
+            multipleClick(265 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
+            // 30M
+            multipleClick(350 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
+            // 40M
+            multipleClick(435 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
+            // 50M
+            multipleClick(520 * 2, 170 * 2, 5, 0);
+            sleepAndLog(1);
 
 
-    // console.log('點上頁箭頭');
-    click(78, 78);
-    sleepAndLog(2);
+            // console.log('點上頁箭頭');
+            click(78, 78);
+            sleepAndLog(2);
 
-    // console.log('點上頁箭頭');
-    click(78, 78);
+            // console.log('點上頁箭頭');
+            click(78, 78);
 
-    base.logShow();
-    sleepAndLog(2);
+            base.logShow();
+            sleepAndLog(2);
+        }
+    }
+    else {
+        throw '進入領地錯誤';
+    }
 }
 
 // 賞金任務 ---
