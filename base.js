@@ -180,5 +180,33 @@ base.waitImgs = function (names, max) {
     }
     return index < max;
 }
+base.waitImgsFast = function (names, max) {
+    this.logClose();
+    var reName = "";
+    for (var index = 0; index < max; index++) {
+        log([index, max]);
+        var img = this.rootGetScreen();
+        sleep(800);
+        names.forEach(name => {
+            if(index < max){
+                var wx = images.read(this.src + name);
+                var p = findImage(img, wx);
+                if (p) {
+                    click(p.x, p.y);
+                    reName = name;
+                    index = max;
+                }
+                wx.recycle();
+                sleep(10);
+            }
+        });
+        img.recycle();
+    }
+    this.logShow();
+    if (reName != '') {
+        return reName;
+    }
+    return index < max;
+}
 
 module.exports = base;
