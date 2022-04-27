@@ -4,6 +4,7 @@ base.start = function (src) {
         toast("请求截图失败");
         exit();
     }
+    auto();
     this.w = false;
     this.src = src;
 }
@@ -79,13 +80,13 @@ base.logClose = function () {
 }
 // 截圖
 base.rootGetScreen = function () {
-    captureScreen(this.src + 'sc.png');
+    captureScreen('/storage/emulated/0/sc.png');
     // shell("screencap -p " + this.src + "sc.png", true)
     // sleep(100)
     // setTimeout(() => {
     //     files.remove(this.src + "sc.png")
     // }, 1000)
-    return images.read(this.src + 'sc.png')
+    return images.read('/storage/emulated/0/sc.png')
 }
 // 用圖片找點
 base.FindAndClick = function (png) {

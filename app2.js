@@ -1,7 +1,7 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-const src = './autojs-artofwar/Pictures/';
+const src = './pictures/';
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
@@ -858,6 +858,7 @@ function multipleClick(x, y, times, delaySeconds) {
 }
 
 function sleepAndLog(times) {
+    base.logShow();
     for (let i = times; i > 0; --i) {
         sleep(1000);
         log(i);
