@@ -43,6 +43,9 @@ var afeatures = dialogs.multiChoice(
     ],
     sFeatures.split(',')
 );
+sFeatures = afeatures.join(',');
+sFeatures = (sFeatures == "") ? '0' : sFeatures;
+storage.put("features", sFeatures)
 
 // 用戶選擇模式
 type_id = dialogs.singleChoice(
@@ -62,12 +65,6 @@ switch (type_id) {
     default:
         break;
 }
-
-
-sFeatures = afeatures.join(',');
-sFeatures = (sFeatures == "") ? '0' : sFeatures;
-storage.put("features", sFeatures)
-
 
 function 自動戰鬥8000關前() {
 
@@ -883,6 +880,10 @@ function afterWait() {
 
 // 卡住處理
 function stuckHandling() {
+    if (base.FindAndClick('取消.png')) {
+        sleepAndLog(5);
+        return true;
+    }
     if (base.FindAndClick('關閉.png')) {
         sleepAndLog(5);
         return true;
