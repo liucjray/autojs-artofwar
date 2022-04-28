@@ -436,7 +436,7 @@ function arenaV2() {
                     '關閉3.png',
                 ], 1);
             }
-            base.waitImgsFast(['競技場_領取獎勵.png',], 10);
+            // base.waitImgsFast(['競技場_領取獎勵.png',], 10);
             if (base.waitImg('競技場_挑戰_挑戰_額外挑戰次數.png', 2)) {
                 var key = afeatures.indexOf('競技場');
                 if (key !== -1) {
