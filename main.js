@@ -4,7 +4,7 @@ const src = './autojs-artofwar/Pictures/';
 const logger = true;
 const ArtOfWarPackageName = 'com.addictive.strategy.army';
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
-const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
+var number_error = 0;
 var storage = storages.create("RITK");
 var afeatures = [];
 var base = require("./base.js");
@@ -25,7 +25,7 @@ var thread_login = threads.start(function () {
             title: "您好！",
             //对话框内容
             content: "使用期限：2022/12/31 23:59:59"
-                    +"\n發現新版本: 請至原下載網站更新 \n",
+                + "\n發現新版本: 請至原下載網站更新 \n",
             //确定键内容
             positive: "確定",
         }).show();
@@ -169,14 +169,14 @@ function 自動戰鬥(after8000) {
 
 // 檢查是否啟動
 function isArtOfWarAct() {
-    return currentActivity() === ArtOfWarAct || currentActivity() === ArtOfWarActADS;
+    return currentActivity() === ArtOfWarAct || (currentActivity().indexOf('ads') >= 0);
 }
 
 // 啟動遊戲
 function launchGame() {
     devLog(currentActivity());
     devLog('--- 檢查並非在遊戲中, 重新進入遊戲 ---');
-    base.closeApp(ArtOfWarPackageName);
+    launch(ArtOfWarPackageName);
     sleepAndLog(5);
     base.waitImgsFast(['主頁.png', '主頁2.png'], 6);
 }
@@ -560,6 +560,7 @@ function goBackUntilIndex() {
         if (re === '主頁.png'
             || re === '主頁2.png'
         ) {
+            number_error = 0 ;
             break;
         }
         _clickLeftTop();
@@ -602,18 +603,6 @@ function _clickMainPage() {
     throw "找不到主頁、重新執行流程";
 }
 
-function _clickGoBack() {
-
-    base.logClose();
-    click(275 * 2, 525 * 2);
-    sleepAndLog(2);
-
-    click(340 * 2, 600 * 2);
-
-    base.logShow();
-    sleepAndLog(2);
-}
-
 function multipleClick(x, y, times, delaySeconds) {
     for (let i = 1; i <= times; i++) {
         click(x, y);
@@ -648,6 +637,9 @@ function afterWait() {
 
 // 卡住處理
 function stuckHandling() {
+    number_error = number_error + 1 ;
+    if(number_error > 5)
+        base.closeApp(ArtOfWarPackageName);
     var re = base.waitImgsFast([
         '取消.png',
         '關閉.png',
