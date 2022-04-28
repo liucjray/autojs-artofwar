@@ -226,16 +226,17 @@ function battleProgress(isADS) {
             '主頁_開戰_關卡_失敗.png',
         ], 25);
         if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-            if (!base.waitImgsFast(
-                ['主頁_開戰_關卡_勝利_三倍獎勵.png',
-                 '主頁_開戰_關卡_勝利_四倍獎勵.png',
-                ], 2)
-            ) {
+
+            var re = base.waitImgsFast([
+                '主頁_開戰_關卡_勝利_三倍獎勵.png',
+                '主頁_開戰_關卡_勝利_四倍獎勵.png',
+            ], 25);
+            if (re === false) {
                 if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
                     throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
                 }
             }
-            else {
+            else if (re === '主頁_開戰_關卡_勝利_三倍獎勵.png') {
                 var re = base.waitImgsFast(
                     ['主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
@@ -531,6 +532,7 @@ function task() {
                 }
             }
             sleepAndLog(2);
+            _clickLeftTop();
         }
     }
     else {
@@ -562,7 +564,8 @@ function goBackUntilIndex() {
             break;
         }
         _clickLeftTop();
-        back();
+        if (index % 3 == 0)
+            back();
         stuckHandling();
         afterWait();
     }
