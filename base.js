@@ -194,5 +194,25 @@ base.waitImgsFast = function (names, max) {
     }
     return index < max;
 }
-
+base.closeApp = function(packageName) {
+    app.openAppSetting(packageName);
+    sleep(1000);
+    text(app.getAppName(packageName)).waitFor();  
+    sleep(1000);
+    let is_sure = textMatches(/(.*强.*|.*停.*|.*结.*|.*行.*)/).findOne();
+    if (is_sure.enabled()) {
+        sleep(1000);
+        textMatches(/(.*强.*|.*停.*|.*结.*|.*行.*)/).findOne().click();
+        sleep(500);
+        textMatches(/(.*确.*|.*定.*)/).findOne().click();
+        log(app.getAppName(packageName) + "應用程式已關閉");
+        sleep(1000);
+        back();
+        sleep(3000);
+        launch(packageName);
+    } else {
+        log(app.getAppName(packageName) + "應用程式無法關閉");
+        back();
+    }
+}
 module.exports = base;
