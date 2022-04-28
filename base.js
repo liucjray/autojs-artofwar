@@ -137,46 +137,11 @@ base.waitImg = function (name, max) {
     var index = 0;
     while (index < max) {
         index = index + 1;
-        beforeWait();
+        sleep(500);
         if (base.FindAndClick(name)) {
             break;
         }
-        afterWait();
-    }
-    return index < max;
-}
-base.waitImgs = function (names, max) {
-    var reName = "";
-    for (var index = 0; index < max; index++) {
-        log('進行中(' + (index+1) + '/' + max + ')');
-        this.logClose();
-        var img = this.rootGetScreen();
-        this.logShow();
-        sleep(800);
-        names.forEach(name => {
-            if(index < max){
-                var wx = images.read(this.src + name);
-                var p = findImage(img, wx);
-                if (p) {
-                    // toast(name.replace('.png', ''));
-                    // log("click : " + name);
-                    this.logClose();
-                    click(p.x, p.y);
-                    this.logShow();
-                    reName = name;
-                    index = max;
-                }
-                else {
-                    // log("No : " + name)
-                }
-                wx.recycle();
-                sleep(100);
-            }
-        });
-        img.recycle();
-    }
-    if (reName != '') {
-        return reName;
+        sleep(500);
     }
     return index < max;
 }
