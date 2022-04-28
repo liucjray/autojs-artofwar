@@ -226,7 +226,10 @@ function battleProgress(isADS) {
             '主頁_開戰_關卡_失敗.png',
         ], 25);
         if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-            if (!base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 2)
+            if (!base.waitImgsFast(
+                ['主頁_開戰_關卡_勝利_三倍獎勵.png',
+                 '主頁_開戰_關卡_勝利_四倍獎勵.png',
+                ], 2)
             ) {
                 if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
                     throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
