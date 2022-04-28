@@ -34,7 +34,6 @@ base.floaty_set();
 // ----------
 // 驗證
 // ----------
-var login = false;
 var thread_login = threads.start(function () {
     let storage_lot_number = (storage.get("lot_number")) ? storage.get("lot_number") : '123456789';
     var lot_number = rawInput("請輸入啟動序號", storage_lot_number);
@@ -74,7 +73,6 @@ function automation() {
         "關閉"
     ]
     )
-
     switch (type_id) {
         case 0:
             afeatures = setFeatures();
@@ -96,8 +94,8 @@ function setFeatures() {
         '請選擇使用的功能',
         [
             '執行關卡',
-            '賞金任務\n每次循環進行10次',
             '自動看廣告拿獎勵',
+            '賞金任務\n每次循環進行10次',
             '競技場\n每次循環進行10次\n次數不足、自動關閉',
             '英雄試煉\n次數不足、自動關閉',
             '榮耀狩獵\n(測試中)',
@@ -108,8 +106,8 @@ function setFeatures() {
     // 排序要跟上面一致
     var afeaturesData = [
         '執行關卡',
-        '賞金任務',
         '看廣告',
+        '賞金任務',
         '競技場',
         '英雄試煉',
         '榮耀狩獵',
@@ -267,10 +265,11 @@ function battleProgress(isADS) {
         if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
 
             var re = base.waitImgsFast([
+                '主頁_開戰_關卡_勝利_三倍冷卻中.png',
                 '主頁_開戰_關卡_勝利_三倍獎勵.png',
                 '主頁_開戰_關卡_勝利_四倍獎勵.png',
             ], 25);
-            if (re === false) {
+            if (re === false || re === '主頁_開戰_關卡_勝利_三倍冷卻中.png') {
                 if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
                     throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
                 }
