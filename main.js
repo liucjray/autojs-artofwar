@@ -1,30 +1,9 @@
-
-const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
-const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
 // const src = '/sdcard/Pictures/'; 
 const src = './autojs-artofwar/Pictures/';
 // const src = './pictures/'; // 打包用
 const logger = true;
-// 賞金任務
-const isTaskRandom = false;
-const taskHours = [13, 14];
-const taskWaitSeconds = 15;
-// 賞金任務-無限戰爭
-const unlimitWarHours = [9, 20];
-const unlimitWarWaitSeconds = 305;
-// 榮耀狩獵
-const hountingHours = [10];
-const hountingWaitSeconds = 305;
-// 競技場
-const arenaHours = [0, 1];
-const arenaWaitSeconds = 60;
-// 英雄試煉
-const heroHours = [8]; //[18, 20];
-const heroWaitSeconds = 30;
-// 開戰
-const fightWaitSeconds = 30;
-const fight8000WaitSeconds = 25;
-
+const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
+const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
 var storage = storages.create("RITK");
 var afeatures = [];
 var base = require("./base.js");
@@ -242,17 +221,17 @@ function fight() {
     if (re === false) {
         throw "找不到主頁_開戰_關卡、重新執行流程";
     }
-    battleProgress(true);
+    battleProgress(true, 10, 40);
 }
-function battleProgress(isADS) {
+function battleProgress(isADS, waitSec, times) {
     // 進入戰鬥延時等待秒數
-    sleepAndLog(10);
+    sleepAndLog(waitSec);
     base.FindAndClick('主頁_開戰_關卡_Auto_off.png');
 
     if (!isADS || afeatures.indexOf("看廣告") < 0) { // 不看廣告
         var re = base.waitImgsFast([
             '主頁_開戰_關卡8000_下一步.png',
-        ], 40);
+        ], times);
         if (re === false) {
             throw "無戰後結果、重新執行流程";
         }
@@ -261,7 +240,7 @@ function battleProgress(isADS) {
         var re = base.waitImgsFast([
             '主頁_開戰_關卡_勝利.png',
             '主頁_開戰_關卡_失敗.png',
-        ], 25);
+        ], times);
         if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
 
             var re = base.waitImgsFast([
@@ -363,47 +342,41 @@ function collectBox8000() {
 
 // 榮耀狩獵 ---
 function shouldHounting() {
-
     if (afeatures.indexOf('榮耀狩獵') < 0) {
         return false;
     }
-
-    let nowDate = new Date();
-
-    // 執行競技場時段
-    if (hountingHours.indexOf(nowDate.getHours()) !== -1) {
-        devLog('--- 執行榮耀狩獵 ---');
-        return true;
-    }
-
-    devLog('--- 無須執行榮耀狩獵 ---');
-    return false;
+    return true;
 }
 
 function hounting() {
     _clickLeftTop();
     _clickMainPage();
-    // toast("榮耀狩獵");
     if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
         if (!base.FindAndClick('榮耀狩獵_鎖.png')) {
-            base.logClose();
-            // console.log('點榮耀狩獵');
-            click(130 * 2, 460 * 2);
-            sleepAndLog(3);
 
-            // console.log('點挑戰');
-            click(720, 1680);
-            sleepAndLog(5);
-
-            // console.log('點開戰');
-            click(560, 1600);
-            sleepAndLog(hountingWaitSeconds);
-
-            // console.log('點下一步');
-            click(540, 1440);
-            base.logShow();
-            sleepAndLog(5);
-
+            if (!base.waitImg('榮耀狩獵.png', 3)) {
+                throw "找不到榮耀狩獵、重新執行流程";
+            }
+            var index = 0;
+            while (index < 4 && base.waitImg('榮耀狩獵_挑戰.png', 3)) {
+                index = index + 1;
+                log('第' + index + '次');
+                var re = base.waitImgsFast([
+                    '榮耀狩獵_挑戰_開戰.png',
+                ], 6);
+                if (re === false) {
+                    throw "找不到主頁_開戰_關卡、重新執行流程";
+                }
+                battleProgress(true, 10, 40);
+            }
+            if (!base.Find('榮耀狩獵_挑戰.png')) {
+                log("次數已達上限、自動關閉");
+                var key = afeatures.indexOf('榮耀狩獵');
+                if (key !== -1) {
+                    afeatures.splice(key, 1);
+                }
+            }
+            sleepAndLog(2);
             _clickLeftTop();
         }
     }
@@ -442,7 +415,7 @@ function arenaV2() {
                 if (re === false) {
                     break;
                 }
-                battleProgress(false);
+                battleProgress(true, 15, 200);
 
                 // 再檢查一次有沒有按到下一步
                 base.waitImgsFast(['主頁_開戰_關卡8000_下一步.png',], 1);
@@ -517,7 +490,7 @@ function hero() {
                 re = base.waitImgsFast([
                     '英雄試煉_前往_挑戰_挑戰_挑戰.png',
                 ], 10);
-                battleProgress(false);
+                battleProgress(true, 10, 40);
             }
             sleepAndLog(2);
             _clickLeftTop();
@@ -555,7 +528,7 @@ function task() {
                 if (re === false) {
                     throw "找不到主頁_開戰_關卡、重新執行流程";
                 }
-                battleProgress(true);
+                battleProgress(true, 5, 20);
             }
             if (!base.Find('賞金任務_挑戰.png')) {
                 log("次數已達上限、自動關閉");
@@ -684,6 +657,7 @@ function stuckHandling() {
         '取消.png',
         '關閉.png',
         '關閉2.png',
+        '關閉3.png',
         '領取.png',
         '重試.png',
         '好.png',
