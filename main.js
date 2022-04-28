@@ -29,8 +29,25 @@ var afeatures = [];
 var base = require("./base.js");
 base.start(src);
 base.floaty_set();
-launchApp('Art of War');
-automation();
+
+// ----------
+// 驗證
+// ----------
+var lot_number = rawInput("請輸入啟動序號", "123456789");
+var login = base.api.getGameOpen(lot_number);
+if(login){
+    dialogs.build({
+        //对话框标题
+        title: "您好！",
+        //对话框内容
+        content: "使用期限：2022/12/31 23:59:59\n發現新版本: 請至原下載網站更新 \n",
+        //确定键内容
+        positive: "確定",
+    }).on("positive", ()=>{
+        launchApp('Art of War');
+        automation();
+    }).show();
+}
 
 // 用戶選擇模式
 function automation() {
@@ -41,16 +58,17 @@ function automation() {
         "關閉"
     ]
     )
-    afeatures = setFeatures();
     switch (type_id) {
         case 0:
+            afeatures = setFeatures();
             自動戰鬥(true);
             break;
         case 1:
+            afeatures = setFeatures();
             自動戰鬥(false);
             break;
         default:
-            exit();
+            console.hide();
             break;
     }
 }
@@ -246,7 +264,7 @@ function battleProgress(isADS) {
                         '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
-                    ], 12);
+                    ], 18);
                 if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'

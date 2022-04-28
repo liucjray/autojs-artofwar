@@ -1,4 +1,5 @@
 var base = {};
+base.api = require("./api.js");
 base.start = function (src) {
     if (!requestScreenCapture(false)) {
         toast("请求截图失败");
@@ -7,6 +8,7 @@ base.start = function (src) {
     auto();
     this.w = false;
     this.src = src;
+    base.api.construct();
 }
 // 懸浮框初始化
 base.floaty_set = function () {
