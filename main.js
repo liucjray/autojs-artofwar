@@ -450,7 +450,7 @@ function hero() {
             if (!base.waitImg('英雄試煉.png', 3)) {
                 throw "找不到英雄試煉、重新執行流程";
             }
-            
+            sleep(2000);
             log('英雄試煉_前往');
             base.logClose();
             click(850,645);
