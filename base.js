@@ -92,11 +92,11 @@ base.Find = function (png) {
     this.logClose();
     var img = this.rootGetScreen();
     var name = png.replace('.png', '')
-    log(name);
     var wx = images.read(this.src + png);
     var p = findImage(img, wx);
     var re = false;
     if (p) {
+        log(name);
         re = true;
     }
     else {

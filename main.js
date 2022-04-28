@@ -64,8 +64,9 @@ function setFeatures() {
             '賞金任務\n每次循環進行10次',
             '自動看廣告拿獎勵',
             '競技場\n每次循環進行10次\n次數不足、自動關閉',
+            '英雄試煉\n次數不足、自動關閉',
             '榮耀狩獵\n(測試中)',
-            '英雄試煉\n(測試中)',
+
         ],
         sFeaturesIndex.split(',')
     );
@@ -75,8 +76,8 @@ function setFeatures() {
         '賞金任務',
         '看廣告',
         '競技場',
-        '榮耀狩獵',
         '英雄試煉',
+        '榮耀狩獵',
     ];
     sFeaturesIndex = afeatures.join(',');
     sFeaturesIndex = (sFeaturesIndex == "") ? '0' : sFeaturesIndex;
@@ -95,6 +96,9 @@ function setFeatures() {
 function 自動戰鬥(after8000) {
     while (true) {
         try {
+
+            log(afeatures);
+
             if (isArtOfWarAct() === false) { // 檢查是否啟動
                 launchGame();
             }
@@ -242,7 +246,7 @@ function battleProgress(isADS) {
                         '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
-                    ], 9);
+                    ], 12);
                 if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
@@ -287,7 +291,7 @@ function collectResource() {
     base.logClose();
     click(378, 683);
     sleepAndLog(5);
-
+    log("收集");
     click(545, 1242);
     base.logShow();
     sleepAndLog(5);
@@ -389,6 +393,7 @@ function arenaV2() {
             var index = 0;
             while (index < 5) {
                 index = index + 1;
+                log('第'+index+'次');
                 beforeWait();
                 if (base.FindAndClick('競技場.png')) {
                     afterWait();
@@ -417,6 +422,7 @@ function arenaV2() {
             }
             // base.waitImgsFast(['競技場_領取獎勵.png',], 10);
             if (base.waitImg('競技場_挑戰_挑戰_額外挑戰次數.png', 2)) {
+                log("次數已達上限、自動關閉");
                 var key = afeatures.indexOf('競技場');
                 if (key !== -1) {
                     afeatures.splice(key, 1);
@@ -434,61 +440,52 @@ function shouldHero() {
     if (afeatures.indexOf('英雄試煉') < 0) {
         return false;
     }
-
-    let nowDate = new Date();
-
-    // 執行競技場時段
-    if (heroHours.indexOf(nowDate.getHours()) !== -1) {
-        devLog('--- 執行英雄試煉 ---');
-        return true;
-    }
-
-    devLog('--- 無須執行英雄試煉 ---');
-    return false;
+    return true;
 }
 
 function hero() {
-
-    // toast("英雄試煉");
+    _clickLeftTop();
     if (base.FindAndClick('領地1.png') || base.FindAndClick('領地2.png')) {
         if (!base.FindAndClick('英雄試煉_鎖.png')) {
-
+            if (!base.waitImg('英雄試煉.png', 3)) {
+                throw "找不到英雄試煉、重新執行流程";
+            }
+            
+            log('英雄試煉_前往');
             base.logClose();
-            // 點英雄試煉
-            multipleClick(220 * 2, 640 * 2, 2);
-            sleepAndLog(2);
-
-            // console.log('點挑戰');
-            click(540 * 2, 1660 * 2);
-            sleepAndLog(2);
-
-            // console.log('點前往');
-            click(440 * 2, 330 * 2);
-            sleepAndLog(5);
-
-            // console.log('點 挑戰');
-            click(275 * 2, 910 * 2);
-            sleepAndLog(4);
-
-            // console.log('超過挑戰次數的確認');
-            click(285 * 2, 600 * 2);
-            sleepAndLog(2);
-
-            // console.log('點一位去挑戰');
-            click(425 * 2, 520 * 2);
-            sleepAndLog(5);
-
-            // console.log('點開戰');
-            click(270 * 2, 800 * 2);
-            sleepAndLog(heroWaitSeconds);
-
-            // console.log('點下一步');
-            click(275 * 2, 720 * 2);
-
+            click(850,645);
+            sleep(500);
+            click(850,645);
+            sleep(500);
             base.logShow();
-            sleepAndLog(5);
+            
+            var index = 0;
+            log('英雄試煉_前往_挑戰');
+            while (index < 10 && base.waitImg('英雄試煉_前往_挑戰.png', 5)) {
 
-            _clickLeftTop();
+                log("檢查次數");
+                if( base.Find('英雄試煉_前往_挑戰_提示.png')){
+                    log("次數已達上限、自動關閉");
+                    var key = afeatures.indexOf('英雄試煉');
+                    if (key !== -1) {
+                        afeatures.splice(key, 1);
+                    }
+                    break;
+                }
+                index = index + 1;
+                log('第'+index+'次');
+                log('英雄試煉_前往_挑戰_挑戰');
+                re = base.waitImgsFast([
+                    '英雄試煉_前往_挑戰_挑戰.png',
+                ], 10);
+                
+                log('英雄試煉_前往_挑戰_挑戰_挑戰');
+                re = base.waitImgsFast([
+                    '英雄試煉_前往_挑戰_挑戰_挑戰.png',
+                ], 10);
+                battleProgress(false);
+            }
+            sleepAndLog(2);
             _clickLeftTop();
         }
     }
@@ -517,6 +514,7 @@ function task() {
             var index = 0;
             while (index < 10 && base.waitImg('賞金任務_挑戰.png', 3)) {
                 index = index + 1;
+                log('第'+index+'次');
                 var re = base.waitImgsFast([
                     '主頁_開戰.png',
                 ], 6);
@@ -526,6 +524,7 @@ function task() {
                 battleProgress(true);
             }
             if (!base.Find('賞金任務_挑戰.png')) {
+                log("次數已達上限、自動關閉");
                 var key = afeatures.indexOf('賞金任務');
                 if (key !== -1) {
                     afeatures.splice(key, 1);
@@ -577,6 +576,7 @@ function goBackUntilIndex() {
 function _clickLeftTop() {
     base.logClose();
     click(70, 70);
+    sleep(500);
     click(70, 70);
     sleep(500);
     if (base.Find('玩家信息.png')) {
