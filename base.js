@@ -88,6 +88,25 @@ base.rootGetScreen = function () {
     // }, 1000)
     return images.read('/storage/emulated/0/sc.png')
 }
+base.Find = function (png) {
+    this.logClose();
+    var img = this.rootGetScreen();
+    var name = png.replace('.png', '')
+    log(name);
+    var wx = images.read(this.src + png);
+    var p = findImage(img, wx);
+    var re = false;
+    if (p) {
+        re = true;
+    }
+    else {
+        // log("No : " + name)
+    }
+    img.recycle();
+    wx.recycle();
+    this.logShow();
+    return re;
+}
 // 用圖片找點
 base.FindAndClick = function (png) {
     this.logClose();

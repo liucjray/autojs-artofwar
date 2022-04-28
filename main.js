@@ -1,9 +1,9 @@
 
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
-// const src = './pictures/'; // 打包用
 // const src = '/sdcard/Pictures/'; 
 const src = './autojs-artofwar/Pictures/';
+// const src = './pictures/'; // 打包用
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
@@ -148,31 +148,6 @@ function 自動戰鬥(after8000) {
 // 遊戲模組
 // ----------
 
-// 返回主頁
-function goBackUntilIndex() {
-    var index = 0;
-    while (index < 10) {
-        index = index + 1;
-        launchApp('Art of War');
-        beforeWait();
-        var re = base.waitImgsFast([
-            '關閉.png',
-            '返回.png',
-            '主頁.png',
-            '主頁2.png',
-        ], 1);
-        if (re === '主頁.png'
-            || re === '主頁2.png'
-        ) {
-            break;
-        }
-        back();
-        stuckHandling();
-        afterWait();
-    }
-    if (index >= 10)
-        throw '未知錯誤1';
-}
 
 // 檢查是否啟動
 function isArtOfWarAct() {
@@ -546,6 +521,12 @@ function task() {
                 }
                 battleProgress(true);
             }
+            if (!base.Find('賞金任務_挑戰.png')) {
+                var key = afeatures.indexOf('賞金任務');
+                if (key !== -1) {
+                    afeatures.splice(key, 1);
+                }
+            }
             sleepAndLog(2);
         }
     }
@@ -559,19 +540,43 @@ function task() {
 // 共用方法
 // ----------
 
-function init() {
-    // 避免有時候如果點了左上角，但是戰鬥尚未結束時卡住的問題
-    _clickGoBack();
+// 返回主頁
+function goBackUntilIndex() {
+    var index = 0;
+    while (index < 10) {
+        index = index + 1;
+        launchApp('Art of War');
+        beforeWait();
+        var re = base.waitImgsFast([
+            '關閉.png',
+            '返回.png',
+            '主頁.png',
+            '主頁2.png',
+        ], 1);
+        if (re === '主頁.png'
+            || re === '主頁2.png'
+        ) {
+            break;
+        }
+        _clickLeftTop();
+        back();
+        stuckHandling();
+        afterWait();
+    }
+    if (index >= 10)
+        throw '未知錯誤1';
 }
 
+
 function _clickLeftTop() {
-    // console.log('點左上角'); 
-    // toast('點主頁');
     base.logClose();
     click(70, 70);
     click(70, 70);
+    sleep(500);
+    if (base.Find('玩家信息.png')) {
+        click(70, 70);
+    }
     base.logShow();
-    sleepAndLog(2);
 }
 
 function _clickMainPage() {
