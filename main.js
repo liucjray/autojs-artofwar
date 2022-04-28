@@ -25,6 +25,7 @@ const heroWaitSeconds = 30;
 const fightWaitSeconds = 30;
 const fight8000WaitSeconds = 25;
 
+var storage = storages.create("RITK");
 var afeatures = [];
 var base = require("./base.js");
 base.start(src);
@@ -33,21 +34,36 @@ base.floaty_set();
 // ----------
 // 驗證
 // ----------
-var lot_number = rawInput("請輸入啟動序號", "123456789");
-var login = base.api.getGameOpen(lot_number);
-if(login){
-    dialogs.build({
-        //对话框标题
-        title: "您好！",
-        //对话框内容
-        content: "使用期限：2022/12/31 23:59:59\n發現新版本: 請至原下載網站更新 \n",
-        //确定键内容
-        positive: "確定",
-    }).on("positive", ()=>{
+var login = false;
+var thread_login = threads.start(function () {
+    let storage_lot_number = (storage.get("lot_number")) ? storage.get("lot_number") : '123456789';
+    var lot_number = rawInput("請輸入啟動序號", storage_lot_number);
+    var login = base.api.getGameOpen(lot_number);
+    if (login) {
+        storage.put("lot_number", lot_number);
+        dialogs.build({
+            //对话框标题
+            title: "您好！",
+            //对话框内容
+            content: "使用期限：2022/12/31 23:59:59\n發現新版本: 請至原下載網站更新 \n",
+            //确定键内容
+            positive: "確定",
+        }).show();
+    }
+});
+thread_login.join();
+
+var thread_start = threads.start(function () {
+    if (base.api.lot_number != "") {
         launchApp('Art of War');
         automation();
-    }).show();
-}
+    }
+    else {
+        alert('認證失敗、請確認您的序號及有效期限');
+        console.hide();
+    }
+});
+thread_start.join();
 
 // 用戶選擇模式
 function automation() {
@@ -58,6 +74,7 @@ function automation() {
         "關閉"
     ]
     )
+
     switch (type_id) {
         case 0:
             afeatures = setFeatures();
@@ -69,13 +86,13 @@ function automation() {
             break;
         default:
             console.hide();
+            exit();
             break;
     }
 }
 function setFeatures() {
-    let storage = storages.create("RITK");
     let sFeaturesIndex = (storage.get("featuresIndex")) ? storage.get("featuresIndex") : '0';
-    let afeatures = dialogs.multiChoice(
+    let afeaturesOne = dialogs.multiChoice(
         '請選擇使用的功能',
         [
             '執行關卡',
@@ -97,12 +114,12 @@ function setFeatures() {
         '英雄試煉',
         '榮耀狩獵',
     ];
-    sFeaturesIndex = afeatures.join(',');
+    sFeaturesIndex = afeaturesOne.join(',');
     sFeaturesIndex = (sFeaturesIndex == "") ? '0' : sFeaturesIndex;
     storage.put("featuresIndex", sFeaturesIndex)
 
     var afeaturesNew = [];
-    afeatures.forEach(index => {
+    afeaturesOne.forEach(index => {
         afeaturesNew[afeaturesNew.length] = afeaturesData[index];
     })
     sFeatures = afeaturesNew.join(',');
@@ -411,7 +428,7 @@ function arenaV2() {
             var index = 0;
             while (index < 5) {
                 index = index + 1;
-                log('第'+index+'次');
+                log('第' + index + '次');
                 beforeWait();
                 if (base.FindAndClick('競技場.png')) {
                     afterWait();
@@ -471,18 +488,18 @@ function hero() {
             sleep(2000);
             log('英雄試煉_前往');
             base.logClose();
-            click(850,645);
+            click(850, 645);
             sleep(500);
-            click(850,645);
+            click(850, 645);
             sleep(500);
             base.logShow();
-            
+
             var index = 0;
             log('英雄試煉_前往_挑戰');
             while (index < 10 && base.waitImg('英雄試煉_前往_挑戰.png', 5)) {
 
                 log("檢查次數");
-                if( base.Find('英雄試煉_前往_挑戰_提示.png')){
+                if (base.Find('英雄試煉_前往_挑戰_提示.png')) {
                     log("次數已達上限、自動關閉");
                     var key = afeatures.indexOf('英雄試煉');
                     if (key !== -1) {
@@ -491,12 +508,12 @@ function hero() {
                     break;
                 }
                 index = index + 1;
-                log('第'+index+'次');
+                log('第' + index + '次');
                 log('英雄試煉_前往_挑戰_挑戰');
                 re = base.waitImgsFast([
                     '英雄試煉_前往_挑戰_挑戰.png',
                 ], 10);
-                
+
                 log('英雄試煉_前往_挑戰_挑戰_挑戰');
                 re = base.waitImgsFast([
                     '英雄試煉_前往_挑戰_挑戰_挑戰.png',
@@ -532,7 +549,7 @@ function task() {
             var index = 0;
             while (index < 10 && base.waitImg('賞金任務_挑戰.png', 3)) {
                 index = index + 1;
-                log('第'+index+'次');
+                log('第' + index + '次');
                 var re = base.waitImgsFast([
                     '主頁_開戰.png',
                 ], 6);

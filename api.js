@@ -51,12 +51,16 @@ api.call = function (params) {
 
 api.getGameOpen = function (lot_number) {
   try {
-    api.lot_number = lot_number;
+    log("序號：" + lot_number);
+    if (lot_number==null || lot_number == "987654321") {
+      return false;
+    }
     resp = api.call({
       method: "get",
       uri: 'api/game/openGame',
     });
     if (resp.code === 1) {
+      api.lot_number = lot_number;
       return true;
     }
     else {
