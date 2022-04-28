@@ -148,7 +148,7 @@ base.waitImg = function (name, max) {
 base.waitImgs = function (names, max) {
     var reName = "";
     for (var index = 0; index < max; index++) {
-        log([index, max]);
+        log('進行中(' + (index+1) + '/' + max + ')');
         this.logClose();
         var img = this.rootGetScreen();
         this.logShow();
@@ -184,7 +184,7 @@ base.waitImgsFast = function (names, max) {
     this.logClose();
     var reName = "";
     for (var index = 0; index < max; index++) {
-        log([index, max]);
+        log('進行中(' + (index+1) + '/' + max + ')');
         var img = this.rootGetScreen();
         sleep(800);
         names.forEach(name => {

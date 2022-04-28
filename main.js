@@ -2,8 +2,8 @@
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
 const ArtOfWarActADS = 'com.google.android.gms.ads.AdActivity';
 // const src = './pictures/'; // 打包用
-const src = '/sdcard/Pictures/'; // 打包用
-// const src = './autojs-artofwar/Pictures/';
+// const src = '/sdcard/Pictures/'; 
+const src = './autojs-artofwar/Pictures/';
 const logger = true;
 // 賞金任務
 const isTaskRandom = false;
@@ -41,7 +41,6 @@ var afeatures = dialogs.multiChoice(
         '賞金任務', // 3
         '榮耀狩獵', // 4
         '英雄試煉', // 5
-        '觀看三倍獎勵廣告', // 6
     ],
     sFeatures.split(',')
 );
@@ -111,8 +110,6 @@ function 自動戰鬥8000關前() {
             if (shouldUnlock()) { // 是否有新解鎖
                 unlock();
             }
-            toast("三秒後重新啟動");
-            sleepAndLog(3);
             devLog('### END ###');
         }
         catch (e) {
@@ -167,10 +164,7 @@ function 自動戰鬥8000關後() {
                 // fight8000();
                 fight8000V2();
             }
-
-            toast("三秒後重新啟動");
-            sleepAndLog(3);
-
+            
             devLog('### END ###');
         }
         catch (e) {
@@ -188,26 +182,28 @@ function 自動戰鬥8000關後() {
 
 // 返回主頁
 function goBackUntilIndex() {
-    var items = ['關閉.png', '返回.png'];
-    if (!base.FindAndClick('主頁.png') && !base.FindAndClick('主頁2.png')) {
-        while (true) {
-            launchApp('Art of War');
-            base.ScanPicsAndClick(items);
-            beforeWait();
-            // 試兩次
-            if (base.FindAndClick('主頁.png') || base.FindAndClick('主頁.png')) {
-                break;
-            }
-            if (base.FindAndClick('主頁2.png')) {
-                break;
-            }
-            back();
-            // 如果卡在下一步就先下一步
-            // 卡住處理
-            stuckHandling();
-            afterWait();
+    var index = 0 ;
+    while (index < 10) {
+        index = index + 1;
+        launchApp('Art of War');
+        beforeWait();
+        var re = base.waitImgsFast([
+            '主頁2.png',
+            '主頁.png',
+            '關閉.png',
+            '返回.png',
+        ], 1);
+        if (re === '主頁.png'
+            || re === '主頁2.png'
+        ) {
+            break;
         }
+        back();
+        stuckHandling();
+        afterWait();
     }
+    if(index >= 10)
+        throw '未知錯誤1';
 }
 
 // 檢查是否啟動
@@ -268,47 +264,54 @@ function fight() {
         }
     }
 
+    // 進入戰鬥延時等待秒數
     sleepAndLog(10);
-    base.FindAndClick('主頁_開戰_關卡_Auto_off.png')
-    var re = base.waitImgs([
-        '主頁_開戰_關卡_勝利.png',
-        '主頁_開戰_關卡_失敗.png'], 20);
-    if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-
-        if (!base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 3)
-            || afeatures.indexOf(6) < 0 // 勾選不看廣告
-        ) {
-            if (!base.waitImg('主頁_開戰_關卡_勝利_下一步.png', 3)) {
-                throw "找不到主頁_開戰_關卡_勝利_下一步、重新執行流程";
-            }
-        }
-        else {
-            var re = base.waitImgs(
-                ['主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png',
-                    '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
-                    '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
-                    '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
-                ], 9);
-            if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
-                || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
-                || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
-            ) {
-                sleep(2000);
-                back();
-                sleep(2000);
-                back();
-            }
-            else {
-                back();
-                base.FindAndClick('主頁_開戰_關卡_勝利_三倍獎勵_關閉.png')
-                // toast("三倍獎勵領取中");
-                sleepAndLog(5);
-            }
-        }
-    }
-    else {
+    base.FindAndClick('主頁_開戰_關卡_Auto_off.png');
+    var re = base.waitImgsFast([
+        '主頁_開戰_關卡8000_下一步.png',
+    ], 40);
+    if (re === false) {
         throw "無戰後結果、重新執行流程";
     }
+    // var re = base.waitImgs([
+    //     '主頁_開戰_關卡_勝利.png',
+    //     '主頁_開戰_關卡_失敗.png'], 20);
+    // if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
+
+    //     if (afeatures.indexOf(9999) < 0 // 勾選不看廣告
+    //         || !base.waitImg('主頁_開戰_關卡_勝利_三倍獎勵.png', 2)
+    //     ) {
+    //         if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
+    //             throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
+    //         }
+    //     }
+    //     else {
+    //         var re = base.waitImgsFast(
+    //             ['主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png',
+    //                 '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
+    //                 '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
+    //                 '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
+    //             ], 9);
+    //         if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
+    //             || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
+    //             || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
+    //         ) {
+    //             sleep(2000);
+    //             back();
+    //             sleep(2000);
+    //             back();
+    //         }
+    //         else {
+    //             back();
+    //             base.FindAndClick('主頁_開戰_關卡_勝利_三倍獎勵_關閉.png')
+    //             // toast("三倍獎勵領取中");
+    //             sleepAndLog(5);
+    //         }
+    //     }
+    // }
+    // else {
+    //     throw "無戰後結果、重新執行流程";
+    // }
 
     // while (true) {
     //     beforeWait();
@@ -368,17 +371,11 @@ function fight8000V2() {
 
     // 進入戰鬥延時等待秒數
     sleepAndLog(10);
-
-    base.FindAndClick('主頁_開戰_關卡_Auto_off.png')
-    var re = base.waitImgs([
-        '主頁_開戰_關卡_勝利.png',
-        '主頁_開戰_關卡_失敗.png'], 20);
-    if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-        if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 3)) {
-            throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
-        }
-    }
-    else {
+    base.FindAndClick('主頁_開戰_關卡_Auto_off.png');
+    var re = base.waitImgsFast([
+        '主頁_開戰_關卡8000_下一步.png',
+    ], 40);
+    if (re === false) {
         throw "無戰後結果、重新執行流程";
     }
 }
@@ -897,10 +894,12 @@ function stuckHandling() {
         '重試.png',
         '好.png',
         '提交.png',
+        '主頁_開戰_返回.png',
         '主頁_開戰_關卡_下一步.png',
         '主頁_開戰_關卡_勝利_三倍獎勵_關閉.png',
     ], 1);
     if (re != false) {
+        log(re);
         return true;
     }
     return false;
