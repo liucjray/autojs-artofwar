@@ -81,6 +81,12 @@ base.logClose = function () {
     }
 }
 base.floaty_msg = function (msg) {
+    if(msg==""){
+        if(this.fMsg){
+            this.fMsg.close();
+        }
+        return true;
+    }
     if(this.fMsg){
         this.fMsg.close();
     }
@@ -94,6 +100,7 @@ base.floaty_msg = function (msg) {
 }
 // 截圖
 base.rootGetScreen = function () {
+    this.floaty_msg(""); // 確保截圖不受影響
     captureScreen('/storage/emulated/0/sc.png');
     // shell("screencap -p " + this.src + "sc.png", true)
     // sleep(100)
