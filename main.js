@@ -262,6 +262,7 @@ function battleProgress(isADS, waitSec, times) {
     
     if(is_auto_off)
         base.FindAndClick('主頁_開戰_關卡_Auto_off.png');
+        base.logClose();
         is_auto_off = false;
 
     if (!isADS || afeatures.indexOf("看廣告") < 0) { // 不看廣告
