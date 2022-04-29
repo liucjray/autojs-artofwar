@@ -132,62 +132,69 @@ function setFeatures() {
     return afeaturesNew;
 }
 function 自動戰鬥(after8000) {
-    var while_index = 0;
-    while (while_index < 300) {
-        while_index = while_index + 1;
-        try {
-            log(afeatures);
-            // 檢查是否啟動
-            if (isArtOfWarAct() === false) {
-                launchGame();
+    try {
+        var while_index = 0;
+        while (while_index < 300) {
+            while_index = while_index + 1;
+            try {
+                log(afeatures);
+                // 檢查是否啟動
+                if (isArtOfWarAct() === false) {
+                    launchGame();
+                }
+                // 返回首頁
+                goBackUntilIndex();
+                
+                // 蒐集資源
+                if (shouldCollectResourece()) {
+                    collectResource();
+                }
+                // 蒐集寶箱 8000後
+                if (after8000 && shouldCollectBox8000()) {
+                    collectBox8000();
+                }
+                // 競技場
+                if (shouldArena()) {
+                    arenaV2();
+                }
+                // 賞金任務
+                if (shouldTask()) {
+                    task();
+                }
+                // 榮耀狩獵
+                if (shouldHounting()) {
+                    hounting();
+                }
+                // 英雄試煉
+                if (shouldHero()) {
+                    hero();
+                }
+                // 執行關卡
+                if (shouldFight()) {
+                    fight();
+                }
+                // 是否有新解鎖 8000前
+                if (!after8000 && shouldUnlock()) {
+                    unlock();
+                }
             }
-            // 返回首頁
-            goBackUntilIndex();
-            
-            // 蒐集資源
-            if (shouldCollectResourece()) {
-                collectResource();
+            catch (e) {
+                devLog(e);
+                // 卡住處理
+                log("例外處理1");
+                stuckHandling();
             }
-            // 蒐集寶箱 8000後
-            if (after8000 && shouldCollectBox8000()) {
-                collectBox8000();
-            }
-            // 競技場
-            if (shouldArena()) {
-                arenaV2();
-            }
-            // 賞金任務
-            if (shouldTask()) {
-                task();
-            }
-            // 榮耀狩獵
-            if (shouldHounting()) {
-                hounting();
-            }
-            // 英雄試煉
-            if (shouldHero()) {
-                hero();
-            }
-            // 執行關卡
-            if (shouldFight()) {
-                fight();
-            }
-            // 是否有新解鎖 8000前
-            if (!after8000 && shouldUnlock()) {
-                unlock();
-            }
+    
         }
-        catch (e) {
-            devLog(e);
-            // 卡住處理
-            log("例外處理1");
-            stuckHandling();
-        }
-
+        base.closeApp(ArtOfWarPackageName);
+        sleepAndLog(5);
+        自動戰鬥(after8000);
+    } catch (e) {
+        log('例外處理4');
+        log(e);
+        自動戰鬥(after8000);
     }
-    base.closeApp(ArtOfWarPackageName);
-    sleepAndLog(5);
-    自動戰鬥(after8000);
+
 }
 
 // ----------
