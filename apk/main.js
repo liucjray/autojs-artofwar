@@ -573,6 +573,14 @@ function task() {
                     '主頁_開戰.png',
                 ], 10);
                 if (re === false) {
+                    if (base.Find('提示.png')) {
+                        log("次數已達上限、自動關閉");
+                        var key = afeatures.indexOf('賞金任務');
+                        if (key !== -1) {
+                            afeatures.splice(key, 1);
+                        }
+                        break;
+                    }
                     throw "找不到賞金任務_開戰、重新執行流程";
                 }
             }
