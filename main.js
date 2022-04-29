@@ -56,12 +56,9 @@ function automation() {
     )
     switch (type_id) {
         case 0:
-            afeatures = setFeatures();
-            自動戰鬥(true);
-            break;
         case 1:
             afeatures = setFeatures();
-            自動戰鬥(false);
+            自動戰鬥(type_id==0);
             break;
         default:
             console.hide();
@@ -107,48 +104,47 @@ function setFeatures() {
     return afeaturesNew;
 }
 function 自動戰鬥(after8000) {
-    while (true) {
+    var while_index = 0 ;
+    while (while_index < 300) {
+        while_index = while_index + 1 ;
         try {
-
             log(afeatures);
-
-            if (isArtOfWarAct() === false) { // 檢查是否啟動
+            // 檢查是否啟動
+            if (isArtOfWarAct() === false) { 
                 launchGame();
             }
-
-            goBackUntilIndex(); // 返回首頁
-
-            if (shouldCollectResourece()) { // 蒐集資源
+            // 返回首頁
+            goBackUntilIndex(); 
+            // 蒐集資源
+            if (shouldCollectResourece()) { 
                 collectResource();
             }
-
-            // 8000後
-            if (after8000 && shouldCollectBox8000()) { // 蒐集寶箱
+            // 蒐集寶箱 8000後
+            if (after8000 && shouldCollectBox8000()) { 
                 collectBox8000();
             }
-
-            if (shouldArena()) { // 競技場
+            // 競技場
+            if (shouldArena()) { 
                 arenaV2();
             }
-
-            if (shouldTask()) { // 賞金任務
+            // 賞金任務
+            if (shouldTask()) { 
                 task();
             }
-
-            if (shouldHounting()) { // 榮耀狩獵
+            // 榮耀狩獵
+            if (shouldHounting()) { 
                 hounting();
             }
-
-            if (shouldHero()) { // 英雄試煉
+            // 英雄試煉
+            if (shouldHero()) { 
                 hero();
             }
-
-            if (shouldFight()) { // 執行關卡
+            // 執行關卡
+            if (shouldFight()) { 
                 fight();
             }
-
-            // 8000前
-            if (!after8000 && shouldUnlock()) { // 是否有新解鎖
+            // 是否有新解鎖 8000前
+            if (!after8000 && shouldUnlock()) { 
                 unlock();
             }
         }
@@ -160,6 +156,9 @@ function 自動戰鬥(after8000) {
         }
 
     }
+    base.closeApp(ArtOfWarPackageName);
+    sleepAndLog(5);
+    自動戰鬥(after8000);
 }
 
 // ----------
@@ -224,6 +223,7 @@ function fight() {
     }
     battleProgress(true, 10, 40);
 }
+
 function battleProgress(isADS, waitSec, times) {
     // 進入戰鬥延時等待秒數
     sleepAndLog(waitSec);
@@ -231,6 +231,7 @@ function battleProgress(isADS, waitSec, times) {
 
     if (!isADS || afeatures.indexOf("看廣告") < 0) { // 不看廣告
         var re = base.waitImgsFast([
+            '下一步.png',
             '主頁_開戰_關卡8000_下一步.png',
         ], times);
         if (re === false) {
@@ -239,6 +240,7 @@ function battleProgress(isADS, waitSec, times) {
     }
     else {
         var re = base.waitImgsFast([
+            '勝利.png',
             '主頁_開戰_關卡_勝利.png',
             '主頁_開戰_關卡_失敗.png',
         ], times);
@@ -638,8 +640,10 @@ function afterWait() {
 // 卡住處理
 function stuckHandling() {
     number_error = number_error + 1 ;
-    if(number_error > 5)
+    if(number_error > 5){
         base.closeApp(ArtOfWarPackageName);
+        sleepAndLog(5);
+    }
     var re = base.waitImgsFast([
         '取消.png',
         '關閉.png',
