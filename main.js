@@ -32,12 +32,12 @@ var thread_login = threads.start(function () {
             positive: "確定",
             negative: "下載",
             neutral: "臉書粉絲團",
-        }).on("negative", ()=>{
+        }).on("negative", () => {
             //监听中性键
             app.openUrl("https://mega.nz/");
             console.hide();
             exit();
-        }).on("neutral", ()=>{
+        }).on("neutral", () => {
             //监听中性键
             app.openUrl("https://www.facebook.com/AOW%E5%8A%A9%E6%89%8B-108406395191937/");
             console.hide();
@@ -63,7 +63,7 @@ var thread_start = threads.start(function () {
             //确定键内容
             positive: "確定",
             neutral: "臉書粉絲團",
-        }).on("neutral", ()=>{
+        }).on("neutral", () => {
             //监听中性键
             app.openUrl("https://www.facebook.com/AOW%E5%8A%A9%E6%89%8B-108406395191937/");
         }).show();
@@ -98,7 +98,7 @@ function setFeatures() {
     let afeaturesOne = dialogs.multiChoice(
         '請選擇使用的功能',
         [
-            '執行關卡',
+            '執行關卡\n只勾選執行關卡時將進入快速戰鬥',
             '自動看廣告拿獎勵',
             '賞金任務\n每次循環進行10次',
             '競技場\n每次循環進行10次\n次數不足、自動關閉',
@@ -132,6 +132,7 @@ function setFeatures() {
 }
 function 自動戰鬥(after8000) {
     var while_index = 0;
+    var isGoback = true;
     while (while_index < 300) {
         while_index = while_index + 1;
         try {
@@ -141,7 +142,9 @@ function 自動戰鬥(after8000) {
                 launchGame();
             }
             // 返回首頁
-            goBackUntilIndex();
+            if (isGoback)
+                goBackUntilIndex();
+            isGoback = true;
             // 蒐集資源
             if (shouldCollectResourece()) {
                 collectResource();
@@ -169,6 +172,7 @@ function 自動戰鬥(after8000) {
             // 執行關卡
             if (shouldFight()) {
                 fight();
+                isGoback = false;
             }
             // 是否有新解鎖 8000前
             if (!after8000 && shouldUnlock()) {
@@ -234,21 +238,23 @@ function shouldFight() {
 function fight() {
     // toast("執行關卡");
     _clickMainPage();
-    var re = base.waitImgsFast([
-        '主頁_開戰.png',
-    ], 6);
-    if (re === false) {
-        throw "找不到主頁_開戰_關卡、重新執行流程";
-    }
-    var re = base.waitImgsFast([
-        '主頁_開戰_關卡8000.png',
-        '主頁_開戰_關卡2.png',
-        '主頁_開戰_關卡.png',
-    ], 6);
-    if (re === false) {
-        throw "找不到主頁_開戰_關卡、重新執行流程";
-    }
-    battleProgress(true, 10, 100);
+    do {
+        var re = base.waitImgsFast([
+            '主頁_開戰.png',
+        ], 6);
+        if (re === false) {
+            throw "找不到主頁_開戰_關卡、重新執行流程";
+        }
+        var re = base.waitImgsFast([
+            '主頁_開戰_關卡8000.png',
+            '主頁_開戰_關卡2.png',
+            '主頁_開戰_關卡.png',
+        ], 6);
+        if (re === false) {
+            throw "找不到主頁_開戰_關卡、重新執行流程";
+        }
+        battleProgress(true, 10, 100);
+      } while (afeatures.indexOf("執行關卡") >= 0 && afeatures.length == 1);
 }
 
 function battleProgress(isADS, waitSec, times) {
@@ -398,7 +404,7 @@ function hounting() {
                 '榮耀狩獵_挑戰_開戰.png',
             ], 6);
             if (re === false) {
-                throw "找不到主頁_開戰_關卡、重新執行流程";
+                throw "找不到榮耀狩獵_挑戰_開戰、重新執行流程";
             }
             battleProgress(true, 10, 100);
         }
@@ -558,7 +564,7 @@ function task() {
                 '主頁_開戰.png',
             ], 6);
             if (re === false) {
-                throw "找不到主頁_開戰_關卡、重新執行流程";
+                throw "找不到賞金任務_開戰、重新執行流程";
             }
             battleProgress(true, 5, 100);
         }
