@@ -80,6 +80,18 @@ base.logClose = function () {
         log(e)
     }
 }
+base.floaty_msg = function (msg) {
+    if(this.fMsg){
+        this.fMsg.close();
+    }
+    this.fMsg = floaty.window(
+        <frame gravity="center">
+            <text id="fMsg" color="#33CCFF" text="" textSize="18sp" />
+        </frame>
+    );
+    this.fMsg.setPosition(200, 10);
+    this.fMsg.fMsg.setText(msg);
+}
 // 截圖
 base.rootGetScreen = function () {
     captureScreen('/storage/emulated/0/sc.png');
@@ -133,53 +145,37 @@ base.FindAndClick = function (png) {
     this.logShow();
     return re;
 }
-base.ScanPicsAndClick = function (pics) {
-    var img = this.rootGetScreen();
-    log(pics);
-    var re = false;
-    pics.forEach(pic => {
-        var wx = images.read(this.src + pic);
-        var p = findImage(img, wx);
-        if (p) {
-            // toast(pic);
-            log([p.x, p.y])
-            click(p.x, p.y);
-            re = true;
-        }
-        else {
-            // log("Not found: " + pic);
-        }
-        wx.recycle();
-    });
-    img.recycle();
-    return re;
-}
-base.waitImg = function (name, max) {
+base.waitImg = function (png, max) {
     var index = 0;
     while (index < max) {
         index = index + 1;
+        var name = png.replace('.png', '')
+        this.floaty_msg(name + " : 進行中(" + index + "/" + max + ")");
         sleep(500);
-        if (base.FindAndClick(name)) {
+        if (base.FindAndClick(png)) {
             break;
         }
         sleep(500);
     }
+    this.floaty_msg("");
     return index < max;
 }
-base.waitImgsFast = function (names, max) {
+base.waitImgsFast = function (pngs, max) {
     this.logClose();
     var reName = "";
     for (var index = 0; index < max; index++) {
-        log('進行中(' + (index+1) + '/' + max + ')');
+        log('進行中(' + (index + 1) + '/' + max + ')');
         var img = this.rootGetScreen();
         sleep(800);
-        names.forEach(name => {
-            if(index < max){
-                var wx = images.read(this.src + name);
+        pngs.forEach(png => {
+            if (index < max) {
+                var name = png.replace('.png', '')
+                this.floaty_msg(name + " : 進行中(" + index + "/" + max + ")");
+                var wx = images.read(this.src + png);
                 var p = findImage(img, wx);
                 if (p) {
                     click(p.x, p.y);
-                    reName = name;
+                    reName = png;
                     index = max;
                 }
                 wx.recycle();
@@ -188,16 +184,17 @@ base.waitImgsFast = function (names, max) {
         });
         img.recycle();
     }
+    this.floaty_msg("");
     this.logShow();
     if (reName != '') {
         return reName;
     }
     return index < max;
 }
-base.closeApp = function(packageName) {
+base.closeApp = function (packageName) {
     app.openAppSetting(packageName);
     sleep(1000);
-    text(app.getAppName(packageName)).waitFor();  
+    text(app.getAppName(packageName)).waitFor();
     sleep(1000);
     let is_sure = textMatches(/(.*强.*|.*停.*|.*结.*|.*行.*)/).findOne();
     if (is_sure.enabled()) {

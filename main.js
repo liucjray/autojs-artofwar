@@ -58,7 +58,7 @@ function automation() {
         case 0:
         case 1:
             afeatures = setFeatures();
-            自動戰鬥(type_id==0);
+            自動戰鬥(type_id == 0);
             break;
         default:
             console.hide();
@@ -104,47 +104,47 @@ function setFeatures() {
     return afeaturesNew;
 }
 function 自動戰鬥(after8000) {
-    var while_index = 0 ;
+    var while_index = 0;
     while (while_index < 300) {
-        while_index = while_index + 1 ;
+        while_index = while_index + 1;
         try {
             log(afeatures);
             // 檢查是否啟動
-            if (isArtOfWarAct() === false) { 
+            if (isArtOfWarAct() === false) {
                 launchGame();
             }
             // 返回首頁
-            goBackUntilIndex(); 
+            goBackUntilIndex();
             // 蒐集資源
-            if (shouldCollectResourece()) { 
+            if (shouldCollectResourece()) {
                 collectResource();
             }
             // 蒐集寶箱 8000後
-            if (after8000 && shouldCollectBox8000()) { 
+            if (after8000 && shouldCollectBox8000()) {
                 collectBox8000();
             }
             // 競技場
-            if (shouldArena()) { 
+            if (shouldArena()) {
                 arenaV2();
             }
             // 賞金任務
-            if (shouldTask()) { 
+            if (shouldTask()) {
                 task();
             }
             // 榮耀狩獵
-            if (shouldHounting()) { 
+            if (shouldHounting()) {
                 hounting();
             }
             // 英雄試煉
-            if (shouldHero()) { 
+            if (shouldHero()) {
                 hero();
             }
             // 執行關卡
-            if (shouldFight()) { 
+            if (shouldFight()) {
                 fight();
             }
             // 是否有新解鎖 8000前
-            if (!after8000 && shouldUnlock()) { 
+            if (!after8000 && shouldUnlock()) {
                 unlock();
             }
         }
@@ -234,6 +234,7 @@ function battleProgress(isADS, waitSec, times) {
             '下一步.png',
             '主頁_開戰_關卡8000_下一步.png',
         ], times);
+        log(re);
         if (re === false) {
             throw "無戰後結果、重新執行流程";
         }
@@ -244,25 +245,30 @@ function battleProgress(isADS, waitSec, times) {
             '主頁_開戰_關卡_勝利.png',
             '主頁_開戰_關卡_失敗.png',
         ], times);
-        if (re === '主頁_開戰_關卡_勝利.png' || re === '主頁_開戰_關卡_失敗.png') {
-
-            var re = base.waitImgsFast([
+        log(re);
+        if ( re === false ) {
+            throw "無戰後結果、重新執行流程";
+        }
+        else {
+            re = base.waitImgsFast([
                 '主頁_開戰_關卡_勝利_三倍冷卻中.png',
                 '主頁_開戰_關卡_勝利_三倍獎勵.png',
                 '主頁_開戰_關卡_勝利_四倍獎勵.png',
             ], 25);
+            log(re);
             if (re === false || re === '主頁_開戰_關卡_勝利_三倍冷卻中.png') {
                 if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
                     throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
                 }
             }
             else if (re === '主頁_開戰_關卡_勝利_三倍獎勵.png') {
-                var re = base.waitImgsFast(
+                re = base.waitImgsFast(
                     ['主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
                     ], 18);
+                log(re);
                 if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png'
                     || re === '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png'
@@ -279,9 +285,6 @@ function battleProgress(isADS, waitSec, times) {
                     sleepAndLog(5);
                 }
             }
-        }
-        else {
-            throw "無戰後結果、重新執行流程";
         }
     }
 }
@@ -562,7 +565,7 @@ function goBackUntilIndex() {
         if (re === '主頁.png'
             || re === '主頁2.png'
         ) {
-            number_error = 0 ;
+            number_error = 0;
             break;
         }
         _clickLeftTop();
@@ -639,8 +642,10 @@ function afterWait() {
 
 // 卡住處理
 function stuckHandling() {
-    number_error = number_error + 1 ;
-    if(number_error > 5){
+    number_error = number_error + 1;
+    log('Handling : ' + number_error);
+    if (number_error > 10) {
+        number_error = 0;
         base.closeApp(ArtOfWarPackageName);
         sleepAndLog(5);
     }
