@@ -15,19 +15,33 @@ base.floaty_set();
 // 驗證
 // ----------
 var thread_login = threads.start(function () {
+    log("版本：" + app.versionCode);
     let storage_lot_number = (storage.get("lot_number")) ? storage.get("lot_number") : '123456789';
     var lot_number = rawInput("請輸入啟動序號", storage_lot_number);
     var login = base.api.getGameOpen(lot_number);
-    if (login) {
+    if (login) { // 序號認證成功
         storage.put("lot_number", lot_number);
         dialogs.build({
             //对话框标题
             title: "您好！",
             //对话框内容
             content: "使用期限：2022/12/31 23:59:59"
-                + "\n發現新版本: 請至原下載網站更新 \n",
+                + "\n發現新版本: 請下載網站更新 \n"
+                + "\n有任何問題或建議請私訊臉書粉絲團",
             //确定键内容
             positive: "確定",
+            negative: "下載",
+            neutral: "臉書粉絲團",
+        }).on("negative", ()=>{
+            //监听中性键
+            app.openUrl("https://mega.nz/");
+            console.hide();
+            exit();
+        }).on("neutral", ()=>{
+            //监听中性键
+            app.openUrl("https://www.facebook.com/AOW%E5%8A%A9%E6%89%8B-108406395191937/");
+            console.hide();
+            exit();
         }).show();
     }
 });
@@ -39,7 +53,20 @@ var thread_start = threads.start(function () {
         automation();
     }
     else {
-        alert('認證失敗、請確認您的序號及有效期限');
+        // 認證失敗
+        dialogs.build({
+            //对话框标题
+            title: "您好！",
+            //对话框内容
+            content: "認證失敗、請確認您的序號及有效期限"
+                + "\n有任何問題及建議請私訊臉書粉絲團 \n",
+            //确定键内容
+            positive: "確定",
+            neutral: "臉書粉絲團",
+        }).on("neutral", ()=>{
+            //监听中性键
+            app.openUrl("https://www.facebook.com/AOW%E5%8A%A9%E6%89%8B-108406395191937/");
+        }).show();
         console.hide();
     }
 });
@@ -286,7 +313,7 @@ function battleProgress(isADS, waitSec, times) {
                     back();
                     base.FindAndClick('主頁_開戰_關卡_勝利_三倍獎勵_關閉.png')
                     // toast("三倍獎勵領取中");
-                    sleepAndLog(5);
+                    sleepAndLog(2);
                 }
             }
         }
