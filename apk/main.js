@@ -251,7 +251,7 @@ function fight() {
         if (re === false) {
             throw "找不到主頁_開戰_關卡、重新執行流程";
         }
-        battleProgress(true, 10, 100);
+        battleProgress(true, 5, 100);
       } while (afeatures.indexOf("執行關卡") >= 0 && afeatures.length == 1);
 }
 

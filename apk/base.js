@@ -95,8 +95,11 @@ base.floaty_msg = function (msg) {
             <text id="fMsg" color="#33CCFF" text="" textSize="18sp" />
         </frame>
     );
-    this.fMsg.setPosition(200, 10);
-    this.fMsg.fMsg.setText(msg);
+    if(this.fMsg){
+        this.fMsg.setPosition(200, 10);
+        this.fMsg.fMsg.setText(msg);
+    }
+    
 }
 // 截圖
 base.rootGetScreen = function () {
