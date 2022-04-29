@@ -99,12 +99,12 @@ function setFeatures() {
     let afeaturesOne = dialogs.multiChoice(
         '請選擇使用的功能',
         [
-            '執行關卡\n只勾選執行關卡時將進入快速戰鬥',
-            '自動看廣告拿獎勵',
-            '賞金任務\n每次循環進行10次',
-            '競技場\n每次循環進行10次\n次數不足、自動關閉',
-            '英雄試煉\n次數不足、自動關閉',
-            '榮耀狩獵\n次數不足、自動關閉',
+            '#執行關卡#',
+            '#自動看廣告拿獎勵#',
+            '#賞金任務#\n每次循環進行10次',
+            '#競技場#\n每次循環進行10次\n次數不足、自動關閉',
+            '#英雄試煉#\n次數不足、自動關閉',
+            '#榮耀狩獵#\n次數不足、自動關閉',
         ],
         sFeaturesIndex.split(',')
     );
@@ -343,6 +343,7 @@ function collectResource() {
     // _clickLeftTop();
     base.logClose();
     _clickMainPage();
+    base.logClose();
     click(378, 683);
     sleepAndLog(5);
     log("收集");
@@ -562,9 +563,18 @@ function task() {
             log('第' + index + '次');
             var re = base.waitImgsFast([
                 '主頁_開戰.png',
+                '賞金任務_挑戰.png',
             ], 6);
             if (re === false) {
                 throw "找不到賞金任務_開戰、重新執行流程";
+            }
+            else if (re === '賞金任務_挑戰.png') {
+                re = base.waitImgsFast([
+                    '主頁_開戰.png',
+                ], 6);
+                if (re === false) {
+                    throw "找不到賞金任務_開戰、重新執行流程";
+                }
             }
             battleProgress(true, 5, 100);
         }
