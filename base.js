@@ -167,9 +167,8 @@ base.waitImg = function (png, max) {
     this.floaty_msg("");
     return index < max;
 }
-base.waitImgsFast = function (pngs, max, is_log) {
-    if(is_log)
-        this.logClose();
+base.waitImgsFast = function (pngs, max) {
+    this.logClose();
     var reName = "";
     for (var index = 0; index < max; index++) {
         log('進行中(' + (index + 1) + '/' + max + ')');
@@ -193,8 +192,7 @@ base.waitImgsFast = function (pngs, max, is_log) {
         img.recycle();
     }
     this.floaty_msg("");
-    if(is_log)
-        this.logShow();
+    this.logShow();
     if (reName != '') {
         return reName;
     }
