@@ -1,0 +1,35 @@
+{
+  "assets": [],
+  "build": {
+    "build_id": "D750436F-18",
+    "build_number": 18,
+    "build_time": 1651246541529,
+    "release": false
+  },
+  "encryptLevel": 3,
+  "useFeatures": [],
+  "icon": "res/icon.png",
+  "launchConfig": {
+    "displaySplash": true,
+    "hideLogs": false,
+    "splashIcon": "res/splashIcon.png",
+    "splashText": "Powered by I.R.T.K.",
+    "stableMode": false
+  },
+  "main": "main.js",
+  "name": "aow輔助",
+  "optimization": {
+    "removeAccessibilityService": false,
+    "removeOpenCv": false,
+    "unusedResources": false
+  },
+  "packageName": "com.brit.autojsartofwar",
+  "permissionConfig": {
+    "requestListOnStartup": [
+      "android.permission.WRITE_EXTERNAL_STORAGE"
+    ]
+  },
+  "scripts": {},
+  "versionCode": 1,
+  "versionName": "1.0.38"
+}
