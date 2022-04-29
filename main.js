@@ -206,7 +206,7 @@ function launchGame() {
     devLog('--- 檢查並非在遊戲中, 重新進入遊戲 ---');
     launch(ArtOfWarPackageName);
     sleepAndLog(5);
-    base.waitImgsFast(['主頁.png', '主頁2.png'], 6);
+    base.waitImgsFast(['主頁.png', '主頁2.png'], 10);
 }
 
 // 是否有新解鎖 ---
@@ -239,7 +239,7 @@ function fight() {
     do {
         var re = base.waitImgsFast([
             '主頁_開戰.png',
-        ], 6);
+        ], 10);
         if (re === false) {
             throw "找不到主頁_開戰_關卡、重新執行流程";
         }
@@ -247,7 +247,7 @@ function fight() {
             '主頁_開戰_關卡8000.png',
             '主頁_開戰_關卡2.png',
             '主頁_開戰_關卡.png',
-        ], 6);
+        ], 10);
         if (re === false) {
             throw "找不到主頁_開戰_關卡、重新執行流程";
         }
@@ -403,7 +403,7 @@ function hounting() {
             log('第' + index + '次');
             var re = base.waitImgsFast([
                 '榮耀狩獵_挑戰_開戰.png',
-            ], 6);
+            ], 10);
             if (re === false) {
                 throw "找不到榮耀狩獵_挑戰_開戰、重新執行流程";
             }
@@ -449,7 +449,7 @@ function arenaV2() {
             if (!base.waitImg('競技場_挑戰_挑戰.png', 10)) {
                 throw "找不到競技場_挑戰_挑戰、重新執行流程";
             }
-            var re = base.waitImgsFast(['主頁_開戰.png',], 6);
+            var re = base.waitImgsFast(['主頁_開戰.png',], 10);
             if (re === false) {
                 break;
             }
@@ -564,14 +564,14 @@ function task() {
             var re = base.waitImgsFast([
                 '主頁_開戰.png',
                 '賞金任務_挑戰.png',
-            ], 6);
+            ], 10);
             if (re === false) {
                 throw "找不到賞金任務_開戰、重新執行流程";
             }
             else if (re === '賞金任務_挑戰.png') {
                 re = base.waitImgsFast([
                     '主頁_開戰.png',
-                ], 6);
+                ], 10);
                 if (re === false) {
                     throw "找不到賞金任務_開戰、重新執行流程";
                 }
