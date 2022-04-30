@@ -1,12 +1,14 @@
 // const src = '/sdcard/Pictures/'; 
-const src = './autojs-artofwar/Pictures/';
+const src = './autojs-artofwar/apk/Pictures/';
 // const src = './pictures/'; // 打包用
 const logger = true;
 const ArtOfWarPackageName = 'com.addictive.strategy.army';
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
-var number_error = 0;
 var is_auto_off = true;
+var isLogin = false;
 var storage = storages.create("RITK");
+var number_error = 0;
+var type_id = false;
 var afeatures = [];
 var base = require("./base.js");
 base.start(src);
@@ -19,15 +21,15 @@ var thread_login = threads.start(function () {
     log("版本：" + app.versionCode);
     let storage_lot_number = (storage.get("lot_number")) ? storage.get("lot_number") : '123456789';
     var lot_number = rawInput("請輸入啟動序號", storage_lot_number);
-    var login = base.api.getGameOpen(lot_number);
-    if (login) { // 序號認證成功
+    isLogin = base.api.getGameOpen(lot_number);
+    if (isLogin) { // 序號認證成功
         storage.put("lot_number", lot_number);
         dialogs.build({
             //对话框标题
             title: "您好！",
             //对话框内容
             content: "使用期限：2022/12/31 23:59:59"
-                + "\n發現新版本: 請下載網站更新 \n"
+                // + "\n發現新版本: 請下載網站更新 \n"
                 + "\n有任何問題或建議請私訊臉書粉絲團",
             //确定键内容
             positive: "確定",
@@ -35,7 +37,8 @@ var thread_login = threads.start(function () {
             neutral: "臉書粉絲團",
         }).on("negative", () => {
             //监听中性键
-            app.openUrl("https://mega.nz/");
+            // app.openUrl("https://mega.nz/");
+            app.openUrl("https://www.facebook.com/AOW%E5%8A%A9%E6%89%8B-108406395191937/");
             console.hide();
             exit();
         }).on("neutral", () => {
@@ -44,14 +47,6 @@ var thread_login = threads.start(function () {
             console.hide();
             exit();
         }).show();
-    }
-});
-thread_login.join();
-
-var thread_start = threads.start(function () {
-    if (base.api.lot_number != "") {
-        launchApp('Art of War');
-        automation();
     }
     else {
         // 認證失敗
@@ -71,17 +66,34 @@ var thread_start = threads.start(function () {
         console.hide();
     }
 });
-thread_start.join();
+thread_login.join();
+if (base.api.lot_number != "" && isLogin) {
+    try {
+        automation(); 1
+    } catch (e) {
+        log('例外處理5');
+        log(e);
+        automation();
+    }
+}
+else {
+    log("發生異常");
+    exit();
+}
+
 
 // 用戶選擇模式
 function automation() {
-    type_id = dialogs.singleChoice(
-        "請選擇類型", [
-        "自動戰鬥8000關前",
-        "自動戰鬥8000關後",
-        "關閉"
-    ]
-    )
+    launchApp('Art of War');
+    if (type_id === false) {
+        type_id = dialogs.singleChoice(
+            "請選擇類型", [
+            "自動戰鬥8000關前",
+            "自動戰鬥8000關後",
+            "關閉"
+        ]
+        )
+    }
     switch (type_id) {
         case 0:
         case 1:
@@ -89,6 +101,7 @@ function automation() {
             自動戰鬥(type_id == 0);
             break;
         default:
+            log("終止程序");
             console.hide();
             exit();
             break;
@@ -96,34 +109,51 @@ function automation() {
 }
 function setFeatures() {
     let sFeaturesIndex = (storage.get("featuresIndex")) ? storage.get("featuresIndex") : '0';
-    let afeaturesOne = dialogs.multiChoice(
-        '請選擇使用的功能',
-        [
+
+    var items = [];
+    var afeaturesData = [];
+    if (base.api.lot_number == "98765432") {
+        items = [
             '#執行關卡#',
             '#自動看廣告拿獎勵#',
             '#賞金任務#\n每次循環進行10次',
             '#競技場#\n每次循環進行10次\n次數不足、自動關閉',
             '#英雄試煉#\n次數不足、自動關閉',
             '#榮耀狩獵#\n次數不足、自動關閉',
-        ],
-        sFeaturesIndex.split(',')
+        ];
+        afeaturesData = [
+            '執行關卡',
+            '看廣告',
+            '賞金任務',
+            '競技場',
+            '英雄試煉',
+            '榮耀狩獵',
+        ];
+    }
+    else {
+        items = [
+            '#執行關卡#',
+            '#自動看廣告拿獎勵#(試用版暫不開放)',
+            '#賞金任務#\(試用版暫不開放)',
+            '#競技場#\n(試用版暫不開放)',
+            '#英雄試煉#\n(試用版暫不開放)',
+            '#榮耀狩獵#\n(試用版暫不開放)',
+        ];
+        afeaturesData = [
+            '執行關卡',
+        ];
+    }
+    let afeaturesOne = dialogs.multiChoice(
+        '請選擇使用的功能', items, sFeaturesIndex.split(',')
     );
-    // 排序要跟上面一致
-    var afeaturesData = [
-        '執行關卡',
-        '看廣告',
-        '賞金任務',
-        '競技場',
-        '英雄試煉',
-        '榮耀狩獵',
-    ];
     sFeaturesIndex = afeaturesOne.join(',');
     sFeaturesIndex = (sFeaturesIndex == "") ? '0' : sFeaturesIndex;
     storage.put("featuresIndex", sFeaturesIndex)
 
     var afeaturesNew = [];
     afeaturesOne.forEach(index => {
-        afeaturesNew[afeaturesNew.length] = afeaturesData[index];
+        if (afeaturesData.hasOwnProperty(index))
+            afeaturesNew[afeaturesNew.length] = afeaturesData[index];
     })
     sFeatures = afeaturesNew.join(',');
     sFeatures = (sFeatures == "") ? '執行關卡' : sFeatures;
@@ -144,7 +174,7 @@ function 自動戰鬥(after8000) {
                 }
                 // 返回首頁
                 goBackUntilIndex();
-                
+
                 // 蒐集資源
                 if (shouldCollectResourece()) {
                     collectResource();
@@ -184,7 +214,7 @@ function 自動戰鬥(after8000) {
                 log("例外處理1");
                 stuckHandling();
             }
-    
+
         }
         base.closeApp(ArtOfWarPackageName);
         sleepAndLog(5);
@@ -259,13 +289,13 @@ function fight() {
             throw "找不到主頁_開戰_關卡、重新執行流程";
         }
         battleProgress(true, 5, 100);
-      } while (afeatures.indexOf("執行關卡") >= 0 && afeatures.length == 1);
+    } while (afeatures.indexOf("執行關卡") >= 0 && afeatures.length == 1);
 }
 
 function battleProgress(isADS, waitSec, times) {
     // 進入戰鬥延時等待秒數
     sleepAndLog(waitSec);
-    if(is_auto_off){
+    if (is_auto_off) {
         base.FindAndClick('主頁_開戰_關卡_Auto_off.png');
         is_auto_off = false;
     }
