@@ -81,6 +81,9 @@ base.logClose = function () {
     }
 }
 base.floaty_msg = function (msg) {
+
+    return true;
+
     if(msg==""){
         if(this.fMsg){
             this.fMsg.close();
