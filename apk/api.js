@@ -1,12 +1,11 @@
 var api = {};
 var _ = require("./lodash.js");
 api.host = '';
+api.game_id = '';
+api.game_version = '';
 api.lot_number = '';
 api.construct = function () {
-  api.host = 'https://aow2.rabby.cc/';
-};
-api.setLotNumber = function (lot_number) {
-  api.lot_number = lot_number;
+  api.host = 'https://autohelper.pro/';
 };
 api.call = function (params) {
 
@@ -52,7 +51,7 @@ api.call = function (params) {
 api.getGameOpen = function (lot_number) {
   try {
     log("序號：" + lot_number);
-    if (lot_number==null || lot_number == "987654321") {
+    if (lot_number == null || lot_number == "987654321") {
       return false;
     }
     resp = api.call({
@@ -64,6 +63,27 @@ api.getGameOpen = function (lot_number) {
       return true;
     }
     else {
+      return false;
+    }
+  } catch (e) {
+    log(e);
+  }
+  return false;
+};
+
+api.verifyGameSn = function () {
+  try {
+    resp = api.call({
+      method: "get",
+      uri: 'api/game/verifyGameSn?lot_number= ' + api.lot_number +
+        '&machine_code = ' + device.serial +
+        '&game_id = ' + api.game_id
+    });
+    if (resp.code === 1) {
+      return true;
+    }
+    else {
+      log(resp.msg)
       return false;
     }
   } catch (e) {

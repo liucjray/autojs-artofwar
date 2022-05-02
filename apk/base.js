@@ -1,6 +1,6 @@
 var base = {};
 base.api = require("./api.js");
-base.start = function (src) {
+base.start = function (src, game_version) {
     if (!requestScreenCapture(false)) {
         toast("请求截图失败");
         exit();
@@ -84,13 +84,13 @@ base.floaty_msg = function (msg) {
 
     return true;
 
-    if(msg==""){
-        if(this.fMsg){
+    if (msg == "") {
+        if (this.fMsg) {
             this.fMsg.close();
         }
         return true;
     }
-    if(this.fMsg){
+    if (this.fMsg) {
         this.fMsg.close();
     }
     this.fMsg = floaty.window(
@@ -98,11 +98,11 @@ base.floaty_msg = function (msg) {
             <text id="fMsg" color="#33CCFF" text="" textSize="18sp" />
         </frame>
     );
-    if(this.fMsg){
+    if (this.fMsg) {
         this.fMsg.setPosition(200, 10);
         this.fMsg.fMsg.setText(msg);
     }
-    
+
 }
 // 截圖
 base.rootGetScreen = function () {

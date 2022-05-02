@@ -1,6 +1,8 @@
 // const src = '/sdcard/Pictures/'; 
 const src = './autojs-artofwar/apk/Pictures/';
 // const src = './pictures/'; // 打包用
+const version = '1.1.2';
+const gane_id = '1';
 const logger = true;
 const ArtOfWarPackageName = 'com.addictive.strategy.army';
 const ArtOfWarAct = 'com.addictive.strategy.army.UnityPlayerActivity';
@@ -11,7 +13,7 @@ var number_error = 0;
 var type_id = false;
 var afeatures = [];
 var base = require("./base.js");
-base.start(src);
+base.start(src, version);
 base.floaty_set();
 
 // ----------
@@ -112,7 +114,7 @@ function setFeatures() {
 
     var items = [];
     var afeaturesData = [];
-    if (base.api.lot_number == "98765432") {
+    if (base.api.lot_number == "britbritbrit") {
         items = [
             '#執行關卡#',
             '#自動看廣告拿獎勵#',
@@ -324,12 +326,14 @@ function battleProgress(isADS, waitSec, times) {
                 '主頁_開戰_關卡_勝利_三倍冷卻中.png',
                 '主頁_開戰_關卡_勝利_三倍獎勵.png',
                 '主頁_開戰_關卡_勝利_四倍獎勵.png',
+                '主頁_開戰_關卡_勝利_重試.png',
                 '勝利.png',
             ], 25);
             log(re);
             if (re === false ||
                 re === '主頁_開戰_關卡_勝利_三倍冷卻中.png' ||
-                re === '勝利.png'
+                re === '勝利.png' ||
+                re === '主頁_開戰_關卡_勝利_重試.png'
             ) {
                 if (!base.waitImg('主頁_開戰_關卡8000_下一步.png', 2)) {
                     throw "找不到主頁_開戰_關卡8000_下一步、重新執行流程";
