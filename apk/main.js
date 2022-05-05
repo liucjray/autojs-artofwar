@@ -135,7 +135,7 @@ function setFeatures() {
     else {
         items = [
             '#執行關卡#',
-            '#自動看廣告拿獎勵#(試用版暫不開放)',
+            '#自動看廣告拿獎勵#',
             '#賞金任務#\(試用版暫不開放)',
             '#競技場#\n(試用版暫不開放)',
             '#英雄試煉#\n(試用版暫不開放)',
@@ -143,6 +143,7 @@ function setFeatures() {
         ];
         afeaturesData = [
             '執行關卡',
+            '看廣告',
         ];
     }
     let afeaturesOne = dialogs.multiChoice(
@@ -245,7 +246,12 @@ function launchGame() {
     devLog('--- 檢查並非在遊戲中, 重新進入遊戲 ---');
     launch(ArtOfWarPackageName);
     sleepAndLog(5);
-    base.waitImgsFast(['主頁.png', '主頁2.png'], 10);
+    base.waitImgsFast([
+        '主頁.png', 
+        '主頁2.png',
+        '主頁3.png',
+        '主頁4.png',
+    ], 10);
 }
 
 // 是否有新解鎖 ---
@@ -660,9 +666,13 @@ function goBackUntilIndex() {
             '返回.png',
             '主頁.png',
             '主頁2.png',
+            '主頁3.png',
+            '主頁4.png',
         ], 1);
-        if (re === '主頁.png'
-            || re === '主頁2.png'
+        if (re === '主頁.png' || 
+            re === '主頁2.png' || 
+            re === '主頁3.png' || 
+            re === '主頁4.png' 
         ) {
             number_error = 0;
             break;
@@ -693,8 +703,10 @@ function _clickLeftTop() {
 
 function _clickMainPage() {
     var re = base.waitImgsFast([
-        '主頁2.png',
         '主頁.png',
+        '主頁2.png',
+        '主頁3.png',
+        '主頁4.png',
     ], 1);
     if (re != false) {
         return true;
@@ -763,6 +775,7 @@ function stuckHandling() {
         '主頁_開戰_關卡_勝利_三倍獎勵_關閉.png',
     ], 1);
     if (re != false) {
+        base.FindAndClick('領地2.png');
         log(re);
         return true;
     }

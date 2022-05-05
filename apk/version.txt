@@ -1,0 +1,23 @@
+v1.1.2
+更新：
+    開放看廣告
+    開放賞金任務
+    開放競技場
+    開放英雄試煉
+    開放榮耀狩獵
+    戰鬥失敗如果不能領三倍獎勵等待太久修正
+    else:
+        api.host = 'https://autohelper.pro/'
+
+        1.openGameInit
+
+        2.openGameLogin  //登入
+        ->lot_number
+        ->apk_version
+        ->game_id
+        ->machine_code
+
+        3.verifyGameSn //驗證
+        ->lot_number
+        ->game_id
+        ->machine_code
