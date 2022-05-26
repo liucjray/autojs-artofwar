@@ -1,7 +1,7 @@
 // const src = '/sdcard/Pictures/'; 
-const src = './autojs-artofwar/apk/Pictures/';
-// const src = './pictures/'; // 打包用
-const version = '1.1.2';
+// const src = './autojs-artofwar/apk/Pictures/';
+const src = './pictures/'; // 打包用
+const version = '1.1.3';
 const gane_id = '1';
 const logger = true;
 const ArtOfWarPackageName = 'com.addictive.strategy.army';
@@ -12,6 +12,7 @@ var storage = storages.create("RITK");
 var number_error = 0;
 var type_id = false;
 var afeatures = [];
+var aCollectBox = [0, 0];
 var base = require("./base.js");
 base.start(src, version);
 base.floaty_set();
@@ -118,6 +119,7 @@ function setFeatures() {
         items = [
             '#執行關卡#',
             '#自動看廣告拿獎勵#',
+            '#檢查寶箱列表、並領取#',
             '#賞金任務#\n每次循環進行10次',
             '#競技場#\n每次循環進行10次\n次數不足、自動關閉',
             '#英雄試煉#\n次數不足、自動關閉',
@@ -126,6 +128,7 @@ function setFeatures() {
         afeaturesData = [
             '執行關卡',
             '看廣告',
+            '寶箱列表',
             '賞金任務',
             '競技場',
             '英雄試煉',
@@ -136,6 +139,7 @@ function setFeatures() {
         items = [
             '#執行關卡#',
             '#自動看廣告拿獎勵#',
+            '#檢查寶箱列表、並領取#',
             '#賞金任務#\(試用版暫不開放)',
             '#競技場#\n(試用版暫不開放)',
             '#英雄試煉#\n(試用版暫不開放)',
@@ -144,6 +148,7 @@ function setFeatures() {
         afeaturesData = [
             '執行關卡',
             '看廣告',
+            '寶箱列表',
         ];
     }
     let afeaturesOne = dialogs.multiChoice(
@@ -182,9 +187,9 @@ function 自動戰鬥(after8000) {
                 if (shouldCollectResourece()) {
                     collectResource();
                 }
-                // 蒐集寶箱 8000後
-                if (after8000 && shouldCollectBox8000()) {
-                    collectBox8000();
+                // 蒐集寶箱
+                if (shouldCollectBox()) {
+                    collectBox();
                 }
                 // 競技場
                 if (shouldArena()) {
@@ -247,7 +252,7 @@ function launchGame() {
     launch(ArtOfWarPackageName);
     sleepAndLog(5);
     base.waitImgsFast([
-        '主頁.png', 
+        '主頁.png',
         '主頁2.png',
         '主頁3.png',
         '主頁4.png',
@@ -351,6 +356,9 @@ function battleProgress(isADS, waitSec, times) {
                         '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊2.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_瞭解詳情.png',
                         '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵.png',
+                        '主頁_開戰_關卡_勝利_三倍獎勵_已發放獎勵1.png',
+                        '主頁_開戰_關卡_勝利_三倍獎勵_立即觀看.png',
+                        '主頁_開戰_關卡_勝利_三倍獎勵_立即下載.png',
                     ], 18);
                 log(re);
                 if (re === '主頁_開戰_關卡_勝利_三倍獎勵_更多資訊.png'
@@ -400,33 +408,50 @@ function collectResource() {
 }
 
 // 蒐集寶箱 ---
-function shouldCollectBox8000() {
-    let rnd = random(1, 30);
-    if (rnd == 1) {
-        devLog('--- 執行蒐集寶箱列表 ---');
-        return true;
+function shouldCollectBox() {
+    if (afeatures.indexOf('寶箱列表') < 0) {
+        return false;
     }
-    devLog('--- 無須執行蒐集寶箱列表 ---');
-    return false;
+    if (aCollectBox[0] < aCollectBox[1]) {
+        log('等待中、不執行')
+        return false;
+    }
+    return true;
 }
 
-function collectBox8000() {
+function collectBox() {
     _clickMainPage();
 
-    // 點寶箱圖示
-    base.logClose();
-    click(480 * 2, 100 * 2);
-    // 20
-    multipleClick(170 * 2, 225 * 2, 3, 0);
-    // 40
-    multipleClick(245 * 2, 225 * 2, 3, 0);
-    // 60
-    multipleClick(320 * 2, 225 * 2, 3, 0);
-    // 100
-    multipleClick(480 * 2, 225 * 2, 3, 0);
-    // 點 X
-    click(500 * 2, 115 * 2);
-    base.logShow();
+    // 主頁_寶箱
+    var re = base.waitImgsFast([
+        '主頁_寶箱.png',
+        '主頁_寶箱1.png',
+    ], 3);
+    if (re === false) {
+        throw "無主頁_寶箱、重新執行流程";
+    }
+    sleep(2000);
+    var re = base.waitImgsFast([
+        '主頁_寶箱_打開.png',
+    ], 3);
+    if (re === false) {
+        log("沒有需要打開的寶箱、等待20分鐘後再檢查");
+        let now = Date.parse(new Date());
+        aCollectBox[0] = now;
+        aCollectBox[1] = now + (60 * 20 * 1000);
+        base.FindAndClick('關閉.png');
+    }
+    else {
+        for (let i = 0; i < 5; i++) {
+            var re = base.waitImgsFast([
+                '主頁_寶箱_打開_好.png',
+            ], 3);
+            if (re === false) {
+                break;
+            }
+            sleep(2000);
+        }
+    }
 }
 
 // 榮耀狩獵 ---
@@ -454,7 +479,7 @@ function hounting() {
             if (re === false) {
                 throw "找不到榮耀狩獵_挑戰_開戰、重新執行流程";
             }
-            battleProgress(true, 10, 100);
+            battleProgress(false, 10, 100);
         }
         if (!base.Find('榮耀狩獵_挑戰.png')) {
             log("次數已達上限、自動關閉");
@@ -482,6 +507,12 @@ function shouldArena() {
 
 function arenaV2() {
     if (base.FindAndClick('競技場1.png') || base.FindAndClick('競技場2.png')) {
+        var re = base.waitImgsFast([
+            '關閉.png',
+            '關閉2.png',
+            '關閉3.png',
+            '關閉4.png',
+        ], 1);
         var index = 0;
         while (index < 5) {
             index = index + 1;
@@ -500,7 +531,7 @@ function arenaV2() {
             if (re === false) {
                 break;
             }
-            battleProgress(true, 15, 200);
+            battleProgress(false, 15, 200);
 
             // 再檢查一次有沒有按到下一步
             base.waitImgsFast(['主頁_開戰_關卡8000_下一步.png',], 1);
@@ -510,6 +541,7 @@ function arenaV2() {
                 '關閉.png',
                 '關閉2.png',
                 '關閉3.png',
+                '關閉4.png',
             ], 1);
         }
         // base.waitImgsFast(['競技場_領取獎勵.png',], 10);
@@ -559,6 +591,7 @@ function hero() {
                     '關閉.png',
                     '關閉2.png',
                     '關閉3.png',
+                    '關閉4.png',
                     '英雄試煉_前往_挑戰_提示_確認.png',
                 ], 1);
                 var key = afeatures.indexOf('英雄試煉');
@@ -604,10 +637,13 @@ function task() {
         if (!base.waitImg('賞金任務.png', 3)) {
             throw "找不到賞金任務、重新執行流程";
         }
-        var index = 0;
-        while (index < 10 && base.waitImg('賞金任務_挑戰.png', 3)) {
-            index = index + 1;
-            log('第' + index + '次');
+        var index1 = 0;
+        log('優先處理非無限戰爭')
+        while (index1 < 20 && base.waitImgsFastRegion([
+            '賞金任務_挑戰.png',
+        ], 3, 0, 800)) {
+            index1 = index1 + 1;
+            log('第' + index1 + '次');
             var re = base.waitImgsFast([
                 '主頁_開戰.png',
                 '賞金任務_挑戰.png',
@@ -620,8 +656,61 @@ function task() {
                     '主頁_開戰.png',
                 ], 10);
                 if (re === false) {
-                    if (base.Find('提示.png')) {
-                        log("次數已達上限、自動關閉");
+                    break;
+                }
+            }
+            battleProgress(false, 5, 100);
+        }
+        var index2 = 0;
+        log('下滑確認是否還有挑戰')
+        sleep(1000);
+        swipe(500, 1600, 500, 300, 600);
+        sleep(1000);
+        while (index2 < 10 && base.waitImgsFastRegion([
+            '賞金任務_挑戰.png',
+        ], 3, 0, 800)) {
+            index2 = index2 + 1;
+            log('第' + index2 + '次');
+            var re = base.waitImgsFast([
+                '主頁_開戰.png',
+                '賞金任務_挑戰.png',
+            ], 10);
+            if (re === false) {
+                throw "找不到賞金任務_開戰、重新執行流程";
+            }
+            else if (re === '賞金任務_挑戰.png') {
+                re = base.waitImgsFast([
+                    '主頁_開戰.png',
+                ], 10);
+                if (re === false) {
+                    break;
+                }
+            }
+            battleProgress(false, 5, 100);
+            sleep(1000);
+            swipe(500, 1600, 500, 300, 600);
+            sleep(1000);
+        }
+        log('無限戰爭')
+        var index3 = 0;
+        while (index3 < 10 && base.waitImg('賞金任務_挑戰.png', 3)) {
+            index3 = index3 + 1;
+            log('第' + index3 + '次');
+            var re = base.waitImgsFast([
+                '主頁_開戰.png',
+                '賞金任務_挑戰.png',
+            ], 10);
+            if (re === false) {
+                throw "找不到賞金任務_開戰、重新執行流程";
+            }
+            else if (re === '賞金任務_挑戰.png') {
+                re = base.waitImgsFast([
+                    '主頁_開戰.png',
+                ], 10);
+                if (re === false) {
+                    if (base.Find('提示.png') && index1 == 0 && index2 == 0) {
+                        log("次數已達上限、領取傷害獎勵");
+                        taskAward();
                         var key = afeatures.indexOf('賞金任務');
                         if (key !== -1) {
                             afeatures.splice(key, 1);
@@ -631,7 +720,7 @@ function task() {
                     throw "找不到賞金任務_開戰、重新執行流程";
                 }
             }
-            battleProgress(true, 5, 100);
+            battleProgress(false, 5, 100);
         }
         if (!base.Find('賞金任務_挑戰.png')) {
             log("次數已達上限、自動關閉");
@@ -647,7 +736,31 @@ function task() {
         throw '進入領地錯誤';
     }
 }
-
+function taskAward() {
+    click(190, 330);
+    click(190, 330);
+    taskAwardCheck();
+    click(360, 330);
+    click(360, 330);
+    taskAwardCheck();
+    click(530, 330);
+    click(530, 330);
+    taskAwardCheck();
+    click(700, 330);
+    click(700, 330);
+    taskAwardCheck();
+    click(870, 330);
+    click(870, 330);
+    taskAwardCheck();
+    click(1040, 330);
+    click(1040, 330);
+    taskAwardCheck();
+}
+function taskAwardCheck() {
+    var re = base.waitImgsFast([
+        '關閉.png',
+    ], 2);
+}
 
 // ----------
 // 共用方法
@@ -659,6 +772,7 @@ function goBackUntilIndex() {
     var index = 0;
     while (index < 10) {
         index = index + 1;
+        log("回到主頁第" + index + '次');
         launchApp('Art of War');
         beforeWait();
         var re = base.waitImgsFast([
@@ -669,17 +783,32 @@ function goBackUntilIndex() {
             '主頁3.png',
             '主頁4.png',
         ], 1);
-        if (re === '主頁.png' || 
-            re === '主頁2.png' || 
-            re === '主頁3.png' || 
-            re === '主頁4.png' 
+        log(re);
+        if (re === '主頁.png' ||
+            re === '主頁2.png' ||
+            re === '主頁3.png' ||
+            re === '主頁4.png'
         ) {
             number_error = 0;
             break;
         }
-        _clickLeftTop();
-        if (index % 3 == 0)
+        else if (re === '關閉.png') {
+            continue;
+        }
+        else {
+            if (base.Find('主頁_開戰.png')) {
+                number_error = 0;
+                break;
+            }
+        }
+        // 連續三次返回加左上角
+        if (index % 3 == 0) {
             back();
+            _clickLeftTop();
+        }
+        else {
+            base.FindAndClick('領地2.png');
+        }
         log("例外處理2");
         stuckHandling();
         afterWait();
@@ -760,6 +889,10 @@ function stuckHandling() {
         base.closeApp(ArtOfWarPackageName);
         sleepAndLog(5);
     }
+    else {
+        home();
+        launchApp('Art of War');
+    }
     var re = base.waitImgsFast([
         '取消.png',
         '關閉.png',
@@ -775,9 +908,9 @@ function stuckHandling() {
         '主頁_開戰_關卡_勝利_三倍獎勵_關閉.png',
     ], 1);
     if (re != false) {
-        base.FindAndClick('領地2.png');
         log(re);
         return true;
     }
+    base.FindAndClick('領地2.png');
     return false;
 }

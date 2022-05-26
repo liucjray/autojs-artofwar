@@ -134,6 +134,27 @@ base.Find = function (png) {
     this.logShow();
     return re;
 }
+base.FindRegionAndClick = function (png, x, y) {
+    this.logClose();
+    var img = this.rootGetScreen();
+    // var name = png.replace('.png', '')
+    var wx = images.read(this.src + png);
+    var p = findImage(img, wx, {
+        region: [x, y, device.width - x, device.height - y],
+    });
+    var re = false;
+    if (p) {
+        click(p.x, p.y);
+        re = true;
+    }
+    else {
+        // log("No")
+    }
+    img.recycle();
+    wx.recycle();
+    this.logShow();
+    return re;
+}
 // 用圖片找點
 base.FindAndClick = function (png) {
     this.logClose();
@@ -187,6 +208,41 @@ base.waitImgsFast = function (pngs, max) {
                 var wx = images.read(this.src + png);
                 var p = findImage(img, wx);
                 if (p) {
+                    // log([p.x, p.y]);
+                    click(p.x, p.y);
+                    reName = png;
+                    index = max;
+                }
+                wx.recycle();
+                sleep(10);
+            }
+        });
+        img.recycle();
+    }
+    this.floaty_msg("");
+    this.logShow();
+    if (reName != '') {
+        return reName;
+    }
+    return index < max;
+}
+base.waitImgsFastRegion = function (pngs, max, x, y) {
+    this.logClose();
+    var reName = "";
+    for (var index = 0; index < max; index++) {
+        log('進行中(' + (index + 1) + '/' + max + ')');
+        var img = this.rootGetScreen();
+        sleep(800);
+        pngs.forEach(png => {
+            if (index < max) {
+                var name = png.replace('.png', '')
+                this.floaty_msg(name + " : 進行中(" + index + "/" + max + ")");
+                var wx = images.read(this.src + png);
+                var p = findImage(img, wx, {
+                    region: [x, y, device.width - x, device.height - y],
+                });
+                if (p) {
+                    // log([p.x, p.y]);
                     click(p.x, p.y);
                     reName = png;
                     index = max;
