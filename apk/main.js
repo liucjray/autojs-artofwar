@@ -737,29 +737,39 @@ function task() {
     }
 }
 function taskAward() {
+    taskAwardCheck();
+    log("500K");
     click(190, 330);
     click(190, 330);
     taskAwardCheck();
+    log("1M");
     click(360, 330);
     click(360, 330);
     taskAwardCheck();
+    log("5M");
     click(530, 330);
     click(530, 330);
     taskAwardCheck();
+    log("8M");
     click(700, 330);
     click(700, 330);
     taskAwardCheck();
+    log("12M");
     click(870, 330);
     click(870, 330);
     taskAwardCheck();
+    log("15M");
     click(1040, 330);
     click(1040, 330);
     taskAwardCheck();
+    base.logShow();
 }
 function taskAwardCheck() {
     var re = base.waitImgsFast([
         '關閉.png',
     ], 2);
+    sleep(1000);
+    base.logClose();
 }
 
 // ----------
