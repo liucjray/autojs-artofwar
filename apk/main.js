@@ -1,7 +1,7 @@
 // const src = '/sdcard/Pictures/'; 
 // const src = './autojs-artofwar/apk/Pictures/';
 const src = './pictures/'; // 打包用
-const version = '1.1.3';
+const version = '1.1.4';
 const gane_id = '1';
 const logger = true;
 const ArtOfWarPackageName = 'com.addictive.strategy.army';
@@ -416,6 +416,7 @@ function shouldCollectBox() {
         log('等待中、不執行')
         return false;
     }
+    log('執行蒐集寶箱')
     return true;
 }
 
@@ -443,13 +444,13 @@ function collectBox() {
     }
     else {
         for (let i = 0; i < 5; i++) {
+            sleep(5000);
             var re = base.waitImgsFast([
                 '主頁_寶箱_打開_好.png',
             ], 3);
             if (re === false) {
                 break;
             }
-            sleep(2000);
         }
     }
 }
@@ -912,6 +913,8 @@ function stuckHandling() {
         '領取.png',
         '重試.png',
         '好.png',
+        '主頁_解鎖_好.png',
+        '主頁_寶箱_打開_好.png',
         '提交.png',
         '主頁_開戰_繼續.png',
         '主頁_開戰_關卡_下一步.png',
